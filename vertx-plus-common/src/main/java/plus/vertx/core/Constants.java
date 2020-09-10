@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 /**
  * 常量表
- * 
+ * @author crazyliu
  */
 public class Constants extends AbstractVerticle {
 	final private static Logger LOGGER = LoggerFactory.getLogger(Constants.class);
@@ -69,22 +69,7 @@ public class Constants extends AbstractVerticle {
 	 */
 	public static final String PARSE_LOCAL_DATE_EXCEPTION = "Unable to obtain";
 
-	//===========================正则定义============================
-
-	/**
-	 * 纯数字
-	 */
-	public static final Pattern NUMERIC_REGEX = Pattern.compile("[0-9]+");
-
-	/**
-	 * 字母开头
-	 */
-	public static final Pattern START_WITH_WORD_REGEX = Pattern.compile("^[A-Za-z].*");
-
-	/**
-	 * 中文
-	 */
-	public static final Pattern CHINESE_REGEX = Pattern.compile("[\u4E00-\u9FFF]");
+	
 	//===========================其他定义============================
 
 	/**
@@ -127,12 +112,5 @@ public class Constants extends AbstractVerticle {
 
 	//===========================常用方法============================
 
-	/**
-	 * 是否为中文语言环境
-	 * @return boolean
-	 */
-	public static boolean isChineseLanguage(){
-		return Locale.getDefault().getLanguage().equals(ZH);
-	}
 
 }
