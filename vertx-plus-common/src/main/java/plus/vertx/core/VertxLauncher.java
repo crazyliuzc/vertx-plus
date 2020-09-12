@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package plus.vertx.core;
 
 import io.netty.util.internal.logging.InternalLoggerFactory;
@@ -14,9 +9,12 @@ import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.eventbus.EventBusOptions;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Log4j2LogDelegateFactory;
 import static io.vertx.core.logging.LoggerFactory.LOGGER_DELEGATE_FACTORY_CLASS_NAME;
 import static io.vertx.core.spi.resolver.ResolverProvider.DISABLE_DNS_RESOLVER_PROP_NAME;
+import java.io.File;
+import java.io.IOException;
 import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,6 +83,136 @@ public class VertxLauncher extends io.vertx.core.Launcher {
         };
         runner.accept(vertx);
         return result.future();
+    }
+    
+    /**
+     * 执行verticle类
+     * @param clazz
+     * @param vertx
+     * @param deploymentOptions
+     * @return 
+     */
+    public static Future<String> runFull(Class clazz, Vertx vertx, DeploymentOptions deploymentOptions) {
+        String exampleDir = "/src/main/java/" + clazz.getPackage().getName().replace(".", "/");
+        String verticleID = clazz.getName();
+        try {
+            // We need to use the canonical file. Without the file name is .
+            File current = new File(".").getCanonicalFile();
+            if (exampleDir.startsWith(current.getName()) && !exampleDir.equals(current.getName())) {
+                exampleDir = exampleDir.substring(current.getName().length() + 1);
+            }
+        } catch (IOException e) {
+            // Ignore it.
+            LOGGER.error("",e);
+        }
+
+        Promise<String> result = Promise.promise();
+        System.setProperty("vertx.cwd", exampleDir);
+        Consumer<Vertx> runner = vert -> {
+            try {
+                if (deploymentOptions != null) {
+                    vert.deployVerticle(verticleID, deploymentOptions, result);
+                } else {
+                    vert.deployVerticle(verticleID, result);
+                }
+            } catch (Throwable t) {
+                LOGGER.error("",t);
+            }
+        };
+        runner.accept(vertx);
+        return result.future();
+    }
+    
+    /**
+     * 执行verticle类
+     * @param verticle
+     * @return 
+     */
+    public static Future<String> run(Verticle verticle) {
+        return run(verticle, new JsonObject());
+    }
+
+    /**
+     * 执行verticle类
+     * @param verticle
+     * @param config
+     * @return 
+     */
+    public static Future<String> run(Verticle verticle, JsonObject config) {
+        return run(verticle, getVertx(), config);
+    }
+
+    /**
+     * 执行verticle类
+     * @param verticle
+     * @param vertx
+     * @return 
+     */
+    public static Future<String> run(Verticle verticle, Vertx vertx) {
+        return run(verticle, vertx, new JsonObject());
+    }
+
+    /**
+     * 执行verticle类
+     * @param verticle
+     * @param vertx
+     * @param config
+     * @return 
+     */
+    public static Future<String> run(Verticle verticle, Vertx vertx, JsonObject config) {
+        if (config.isEmpty()) {
+            return runFull(verticle, vertx,null);
+        } else {
+            DeploymentOptions deploymentOptions = new DeploymentOptions();
+            deploymentOptions.setConfig(config);
+            return runFull(verticle, vertx, deploymentOptions);
+        }
+    }
+    
+    /**
+     * 执行verticle类
+     * @param clazz
+     * @return 
+     */
+    public static Future<String> run(Class clazz) {
+        return run(clazz, new JsonObject());
+    }
+
+    /**
+     * 执行verticle类
+     * @param clazz
+     * @param config
+     * @return 
+     */
+    public static Future<String> run(Class clazz, JsonObject config) {
+        return run(clazz, getVertx(), config);
+    }
+
+    /**
+     * 执行verticle类
+     * @param clazz
+     * @param vertx
+     * @return 
+     */
+    public static Future<String> run(Class clazz, Vertx vertx) {
+        return run(clazz, vertx, new JsonObject());
+    }
+
+    /**
+     * 执行verticle类
+     * @param clazz
+     * @param vertx
+     * @param config
+     * @return 
+     */
+    public static Future<String> run(Class clazz, Vertx vertx, JsonObject config) {
+        if (config.isEmpty()) {
+            return runFull(clazz, vertx,null);
+        } else {
+            DeploymentOptions deploymentOptions = new DeploymentOptions();
+            deploymentOptions.setConfig(config);
+            return runFull(clazz, vertx, deploymentOptions);
+        }
     }
     
 }
