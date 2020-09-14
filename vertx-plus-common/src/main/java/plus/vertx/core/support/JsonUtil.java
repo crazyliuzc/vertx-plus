@@ -25,7 +25,7 @@ import plus.vertx.core.support.json.JsonObjectDeserializer;
 import plus.vertx.core.support.json.JsonObjectSerializer;
 
 /**
- * Json工具类，基于Jackson实现基础转换
+ * Json工具类，基于Jackson实现基础转换，可以转化proto
  *
  * @author crazyliu
  */
