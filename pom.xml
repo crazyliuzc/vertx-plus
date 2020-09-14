@@ -33,6 +33,7 @@
         <jackson.version>2.11.0</jackson.version>
         <jackson-datatype-protobuf.version>0.9.12</jackson-datatype-protobuf.version>
         <reflections.version>0.9.11</reflections.version>
+        <protobuf-java.version>3.10.0</protobuf-java.version>
     </properties>
 
     <dependencies>
@@ -128,6 +129,12 @@
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>
                 <version>${reflections.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java-util</artifactId>
+                <version>${protobuf-java.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
