@@ -3,6 +3,7 @@ package plus.vertx.core.support;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -14,6 +15,7 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import plus.vertx.core.support.json.ByteArrayDeserializer;
@@ -34,7 +36,7 @@ public class JsonUtil {
     final private static Logger LOGGER = LoggerFactory.getLogger(JsonUtil.class);
 
     /**
-     * 获取Jackson实例
+     * 获取Jackson实例(数字不转字符串)
      *
      * @return
      */
@@ -94,6 +96,101 @@ public class JsonUtil {
             }
         } catch (JsonProcessingException e) {
             LOGGER.error("", e);
+            throw new RuntimeException(e.getCause());
+        }
+    }
+    
+    /**
+     * 将json转化成bean
+     *
+     * @param <T>
+     * @param json
+     * @param valueType
+     * @return
+     */
+    public static <T> T toEntity(String json, Class<T> valueType) {
+        try {
+            return get().readValue(json, valueType);
+        } catch (JsonProcessingException e) {
+            LOGGER.error("",e);
+            throw new RuntimeException(e.getCause());
+        }
+    }
+    
+    /**
+     * 将json转化成List
+     *
+     * @param <T>
+     * @param json
+     * @param collectionClass
+     * @param elementClass
+     * @return
+     */
+    public static <T> List<T> toList(String json, Class<? extends List> collectionClass, Class<T> elementClass) {
+        ObjectMapper objectMapper = get();
+        JavaType javaType = objectMapper.getTypeFactory().constructCollectionType(collectionClass, elementClass);
+        try {
+            return objectMapper.readValue(json, javaType);
+        } catch (JsonProcessingException e) {
+            LOGGER.error("",e);
+            throw new RuntimeException(e.getCause());
+        }
+    }
+    
+    /**
+     * 将json转化成List
+     *
+     * @param <T>
+     * @param json
+     * @return
+     */
+    public static <T> List<T> toList(String json) {
+        ObjectMapper objectMapper = get();
+        JavaType javaType = objectMapper.getTypeFactory().constructCollectionType(List.class, Object.class);
+        try {
+            return objectMapper.readValue(json, javaType);
+        } catch (JsonProcessingException e) {
+            LOGGER.error("",e);
+            throw new RuntimeException(e.getCause());
+        }
+    }
+    
+    /**
+     * 将json转化成Map
+     *
+     * @param <K>
+     * @param <V>
+     * @param json
+     * @param mapClass
+     * @param keyClass
+     * @param valueClass
+     * @return
+     */
+    public static <K, V> Map<K, V> toMap(String json, Class<? extends Map> mapClass, Class<K> keyClass,
+                                         Class<V> valueClass) {
+        ObjectMapper objectMapper = get();
+        JavaType javaType = objectMapper.getTypeFactory().constructMapType(mapClass, keyClass, valueClass);
+        try {
+            return objectMapper.readValue(json, javaType);
+        } catch (JsonProcessingException e) {
+            LOGGER.error("",e);
+            throw new RuntimeException(e.getCause());
+        }
+    }
+
+    /**
+     * 将json转化成Map
+     *
+     * @param json
+     * @return
+     */
+    public static Map<String, Object> toMap(String json) {
+        ObjectMapper objectMapper = get();
+        JavaType javaType = objectMapper.getTypeFactory().constructMapType(Map.class, String.class, Object.class);
+        try {
+            return objectMapper.readValue(json, javaType);
+        } catch (JsonProcessingException e) {
+            LOGGER.error("",e);
             throw new RuntimeException(e.getCause());
         }
     }
