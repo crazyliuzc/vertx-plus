@@ -107,7 +107,7 @@ public class BeanCopyUtil {
      * @return 
      */
     private static <S, T> BeanCopier getCacheBeanCopier(Class<S> source, Class<T> target) {
-        ConcurrentHashMap<Class<?>, BeanCopier> copierConcurrentHashMap = cache.computeIfAbsent(source, () -> new ConcurrentHashMap<>(16));
-        return copierConcurrentHashMap.computeIfAbsent(target, () -> BeanCopier.create(source, target, false));
+        ConcurrentHashMap<Class<?>, BeanCopier> copierConcurrentHashMap = cache.computeIfAbsent(source, aClass -> new ConcurrentHashMap<>(16));
+        return copierConcurrentHashMap.computeIfAbsent(target, aClass -> BeanCopier.create(source, target, false));
     }
 }
