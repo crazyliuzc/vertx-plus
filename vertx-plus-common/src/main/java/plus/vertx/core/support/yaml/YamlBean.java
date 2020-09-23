@@ -1,5 +1,6 @@
 package plus.vertx.core.support.yaml;
 
+import io.vertx.core.json.JsonObject;
 import java.io.Serializable;
 
 /**
@@ -8,5 +9,8 @@ import java.io.Serializable;
  */
 public class YamlBean implements Serializable {
     public YamlBean() {
+    }
+    
+    public YamlBean(JsonObject config) {
     }
 }

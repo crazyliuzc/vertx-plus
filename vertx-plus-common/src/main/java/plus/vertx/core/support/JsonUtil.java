@@ -33,7 +33,7 @@ import plus.vertx.core.support.json.JsonObjectSerializer;
  */
 public class JsonUtil {
 
-    final private static Logger LOGGER = LoggerFactory.getLogger(JsonUtil.class);
+    final private static Logger log = LoggerFactory.getLogger(JsonUtil.class);
 
     /**
      * 获取Jackson实例(数字不转字符串)
@@ -95,7 +95,7 @@ public class JsonUtil {
                 return tempStr;
             }
         } catch (JsonProcessingException e) {
-            LOGGER.error("", e);
+            log.error("", e);
             throw new RuntimeException(e.getCause());
         }
     }
@@ -112,7 +112,7 @@ public class JsonUtil {
         try {
             return get().readValue(json, valueType);
         } catch (JsonProcessingException e) {
-            LOGGER.error("",e);
+            log.error("",e);
             throw new RuntimeException(e.getCause());
         }
     }
@@ -132,7 +132,7 @@ public class JsonUtil {
         try {
             return objectMapper.readValue(json, javaType);
         } catch (JsonProcessingException e) {
-            LOGGER.error("",e);
+            log.error("",e);
             throw new RuntimeException(e.getCause());
         }
     }
@@ -150,7 +150,7 @@ public class JsonUtil {
         try {
             return objectMapper.readValue(json, javaType);
         } catch (JsonProcessingException e) {
-            LOGGER.error("",e);
+            log.error("",e);
             throw new RuntimeException(e.getCause());
         }
     }
@@ -173,7 +173,7 @@ public class JsonUtil {
         try {
             return objectMapper.readValue(json, javaType);
         } catch (JsonProcessingException e) {
-            LOGGER.error("",e);
+            log.error("",e);
             throw new RuntimeException(e.getCause());
         }
     }
@@ -190,7 +190,7 @@ public class JsonUtil {
         try {
             return objectMapper.readValue(json, javaType);
         } catch (JsonProcessingException e) {
-            LOGGER.error("",e);
+            log.error("",e);
             throw new RuntimeException(e.getCause());
         }
     }

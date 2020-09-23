@@ -9,6 +9,9 @@
     <version>0.0.1-SNAPSHOT</version>
     <modules>
         <module>vertx-plus-common</module>
+        <module>vertx-plus-http</module>
+        <module>vertx-plus-mapper</module>
+        <module>vertx-plus-service</module>
     </modules>
     <packaging>pom</packaging>
     <name>vertx-plus</name>
@@ -41,6 +44,9 @@
         <error_prone_annotations.version>2.4.0</error_prone_annotations.version>
         <cglib.version>3.3.0</cglib.version>
         <objenesis.version>3.1</objenesis.version>
+        <!-- 项目模块-->
+        <vertx-plus-common.version>0.0.1-SNAPSHOT</vertx-plus-common.version>
+        <vertx-plus-http.version>0.0.1-SNAPSHOT</vertx-plus-http.version>
     </properties>
 
     <dependencies>
@@ -223,6 +229,21 @@
                 <artifactId>hazelcast</artifactId>
                 <version>${hazelcast.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-web</artifactId>
+                <version>${vertx.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-databind</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
             
             <dependency>
                 <groupId>io.netty</groupId>
@@ -305,6 +326,17 @@
                 <version>${objenesis.version}</version>
             </dependency>
 
+            <!-- 项目模块-->
+            <dependency>
+                <groupId>plus.vertx</groupId>
+                <artifactId>vertx-plus-common</artifactId>
+                <version>${vertx-plus-common.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>plus.vertx</groupId>
+                <artifactId>vertx-plus-http</artifactId>
+                <version>${vertx-plus-http.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

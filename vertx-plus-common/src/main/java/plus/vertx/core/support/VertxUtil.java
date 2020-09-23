@@ -19,10 +19,10 @@ import org.slf4j.LoggerFactory;
  * @author crazyliu
  */
 public class VertxUtil {
-    private static final Logger LOGGER = LoggerFactory.getLogger(VertxUtil.class);
+    private static final Logger log = LoggerFactory.getLogger(VertxUtil.class);
     
     /**
-     * 获取vertx
+     * 临时获取vertx,仅用于测试
      * @return
      */
     public static Vertx getVertx() {
@@ -59,7 +59,7 @@ public class VertxUtil {
                     vert.deployVerticle(verticle, result);
                 }
             } catch (Throwable t) {
-                LOGGER.error("",t);
+                log.error("",t);
             }
         };
         runner.accept(vertx);
@@ -83,8 +83,7 @@ public class VertxUtil {
                 exampleDir = exampleDir.substring(current.getName().length() + 1);
             }
         } catch (IOException e) {
-            // Ignore it.
-            LOGGER.error("",e);
+            log.error("",e);
         }
 
         Promise<String> result = Promise.promise();
@@ -97,32 +96,13 @@ public class VertxUtil {
                     vert.deployVerticle(verticleID, result);
                 }
             } catch (Throwable t) {
-                LOGGER.error("",t);
+                log.error("",t);
             }
         };
         runner.accept(vertx);
         return result.future();
     }
     
-    /**
-     * 执行verticle类
-     * @param verticle
-     * @return 
-     */
-    public static Future<String> run(Verticle verticle) {
-        return run(verticle, new JsonObject());
-    }
-
-    /**
-     * 执行verticle类
-     * @param verticle
-     * @param config
-     * @return 
-     */
-    public static Future<String> run(Verticle verticle, JsonObject config) {
-        return run(verticle, getVertx(), config);
-    }
-
     /**
      * 执行verticle类
      * @param verticle
@@ -150,25 +130,6 @@ public class VertxUtil {
         }
     }
     
-    /**
-     * 执行verticle类
-     * @param clazz
-     * @return 
-     */
-    public static Future<String> run(Class clazz) {
-        return run(clazz, new JsonObject());
-    }
-
-    /**
-     * 执行verticle类
-     * @param clazz
-     * @param config
-     * @return 
-     */
-    public static Future<String> run(Class clazz, JsonObject config) {
-        return run(clazz, getVertx(), config);
-    }
-
     /**
      * 执行verticle类
      * @param clazz

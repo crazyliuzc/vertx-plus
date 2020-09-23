@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
-import static plus.vertx.core.Constants.ZH;
 
 /**
  * 验证工具
@@ -113,7 +112,7 @@ public class ValidateUtil {
      * @return boolean
      */
     public static boolean isChineseLanguage() {
-        return Locale.getDefault().getLanguage().equals(ZH);
+        return Locale.getDefault().getLanguage().equals("zh");
     }
 
     //===========================集合校验============================

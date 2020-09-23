@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * @author crazyliu
  */
 public class EventBusUtil {
-     final private static Logger LOGGER = LoggerFactory.getLogger(EventBusUtil.class);
+     final private static Logger log = LoggerFactory.getLogger(EventBusUtil.class);
     private static EventBus singletonEventBus;
 
     public EventBusUtil(Vertx vertx) {
@@ -51,14 +51,14 @@ public class EventBusUtil {
                 if (replyHandler.succeeded()) {
                     result.complete((Message<T>) replyHandler.result());
                 } else {
-                    LOGGER.error("\n 消息地址:{} \n 参数:{} \n ",address,params.encodePrettily());
-                    LOGGER.error("",replyHandler.cause());
+                    log.error("\n 消息地址:{} \n 参数:{} \n ",address,params.encodePrettily());
+                    log.error("",replyHandler.cause());
                     result.fail(replyHandler.cause());
                 }
             });
         }
         if (ValidateUtil.isNotEmpty(errorMsg)) {
-            LOGGER.error(errorMsg);
+            log.error(errorMsg);
             result.fail(errorMsg);
         }
         return result.future();
