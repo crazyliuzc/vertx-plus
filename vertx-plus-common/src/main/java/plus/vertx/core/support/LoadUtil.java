@@ -85,7 +85,7 @@ public class LoadUtil {
      * @param annotation 带扫描的注解类
      * @return
      */
-    public static Set<Class<?>> getServiceClasses(String serviceScan, Class<? extends Annotation> annotation) {
+    public static Set<Class<?>> getClasses(String serviceScan, Class<? extends Annotation> annotation) {
         if (ValidateUtil.isEmpty(serviceScan)) {
             return new Reflections().getTypesAnnotatedWith(annotation);
         } else if (serviceScan.contains(",")) {

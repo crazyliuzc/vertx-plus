@@ -93,7 +93,7 @@ public class MainVerticle extends BaseStart {
             result.fail("Please fill in the start app path");
             return result.future();
         }
-        Set<Class<?>> verticles = LoadUtil.getServiceClasses(verticleSpan, Start.class);
+        Set<Class<?>> verticles = LoadUtil.getClasses(verticleSpan, Start.class);
         if (ValidateUtil.isNotEmpty(verticles)) {
             //启动类排序,从大到小
             Comparator<Class<?>> comparator = (c1, c2) -> {
