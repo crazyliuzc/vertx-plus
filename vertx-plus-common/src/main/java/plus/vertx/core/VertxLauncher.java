@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * vertx启动工具类
- * 命令：vertx run plus.vertx.core.VertxLauncher -c xx.jar
+ * 命令：vertx run xxx -cp xx.jar --launcher-class=plus.vertx.core.VertxLauncher --vertx-id=xxx -conf xxx.conf
  * @author crazyliu
  */
 public class VertxLauncher extends io.vertx.core.Launcher {
