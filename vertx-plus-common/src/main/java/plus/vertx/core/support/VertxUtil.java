@@ -7,10 +7,8 @@ import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.eventbus.EventBusOptions;
-import io.vertx.core.json.JsonObject;
-import java.io.File;
-import java.io.IOException;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +47,7 @@ public class VertxUtil {
      * @param deploymentOptions
      * @return 
      */
-    public static Future<String> runFull(Verticle verticle, Vertx vertx, DeploymentOptions deploymentOptions) {
+    public static Future<String> run(Verticle verticle, Vertx vertx, DeploymentOptions deploymentOptions) {
         Promise<String> result = Promise.promise();
         Consumer<Vertx> runner = (Vertx vert) -> {
             try {
@@ -73,87 +71,13 @@ public class VertxUtil {
      * @param deploymentOptions
      * @return 
      */
-    public static Future<String> runFull(Class clazz, Vertx vertx, DeploymentOptions deploymentOptions) {
-        String exampleDir = "/src/main/java/" + clazz.getPackage().getName().replace(".", "/");
-        String verticleID = clazz.getName();
+    public static Future<String> run(Class clazz, Vertx vertx, DeploymentOptions deploymentOptions) {
         try {
-            // We need to use the canonical file. Without the file name is .
-            File current = new File(".").getCanonicalFile();
-            if (exampleDir.startsWith(current.getName()) && !exampleDir.equals(current.getName())) {
-                exampleDir = exampleDir.substring(current.getName().length() + 1);
-            }
-        } catch (IOException e) {
-            log.error("",e);
-        }
-
-        Promise<String> result = Promise.promise();
-        System.setProperty("vertx.cwd", exampleDir);
-        Consumer<Vertx> runner = vert -> {
-            try {
-                if (deploymentOptions != null) {
-                    vert.deployVerticle(verticleID, deploymentOptions, result);
-                } else {
-                    vert.deployVerticle(verticleID, result);
-                }
-            } catch (Throwable t) {
-                log.error("",t);
-            }
-        };
-        runner.accept(vertx);
-        return result.future();
-    }
-    
-    /**
-     * 执行verticle类
-     * @param verticle
-     * @param vertx
-     * @return 
-     */
-    public static Future<String> run(Verticle verticle, Vertx vertx) {
-        return run(verticle, vertx, new JsonObject());
+            return run((Verticle)clazz.newInstance(), vertx, deploymentOptions);
+        } catch (IllegalAccessException | InstantiationException ex) {
+            log.error("",ex);
+            return Future.failedFuture(ex);
+        } 
     }
 
-    /**
-     * 执行verticle类
-     * @param verticle
-     * @param vertx
-     * @param config
-     * @return 
-     */
-    public static Future<String> run(Verticle verticle, Vertx vertx, JsonObject config) {
-        if (config.isEmpty()) {
-            return runFull(verticle, vertx,null);
-        } else {
-            DeploymentOptions deploymentOptions = new DeploymentOptions();
-            deploymentOptions.setConfig(config);
-            return runFull(verticle, vertx, deploymentOptions);
-        }
-    }
-    
-    /**
-     * 执行verticle类
-     * @param clazz
-     * @param vertx
-     * @return 
-     */
-    public static Future<String> run(Class clazz, Vertx vertx) {
-        return run(clazz, vertx, new JsonObject());
-    }
-
-    /**
-     * 执行verticle类
-     * @param clazz
-     * @param vertx
-     * @param config
-     * @return 
-     */
-    public static Future<String> run(Class clazz, Vertx vertx, JsonObject config) {
-        if (config.isEmpty()) {
-            return runFull(clazz, vertx,null);
-        } else {
-            DeploymentOptions deploymentOptions = new DeploymentOptions();
-            deploymentOptions.setConfig(config);
-            return runFull(clazz, vertx, deploymentOptions);
-        }
-    }
 }

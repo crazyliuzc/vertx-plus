@@ -3,6 +3,7 @@ package plus.vertx.core.startup;
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
+import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Verticle;
@@ -34,6 +35,7 @@ public class MainVerticle extends BaseStart {
      */
     @Override
     public Future<Void> action(Vertx vertx) {
+        JsonObject config = config();
         Promise<Void> result = Promise.promise();
         getYaml(vertx).onComplete(rs -> {
             if (rs.succeeded()) {
@@ -131,31 +133,26 @@ public class MainVerticle extends BaseStart {
         Promise<Void> result = Promise.promise();
         Class<?> verticle = verticleList.get(index);
         if (verticle.isAnnotationPresent(Start.class)) {
-            try {
-                log.info("start startVerticle: {}", verticle.getName());
-                VertxUtil.run((Verticle) verticle.newInstance(), vertx).onComplete(ar -> {
-                    if (ar.succeeded()) {
-                        if (index < max) {
-                            int next = index + 1;
-                            runStart(vertx, verticleList, next, max).onComplete(nAr -> {
-                                if (nAr.succeeded()) {
-                                    result.complete();
-                                } else {
-                                    result.fail(nAr.cause());
-                                }
-                            });
-                        } else {
-                            result.complete();
-                        }
+            log.info("start startVerticle: {}", verticle.getName());
+            VertxUtil.run(verticle, vertx, new DeploymentOptions()).onComplete(ar -> {
+                if (ar.succeeded()) {
+                    if (index < max) {
+                        int next = index + 1;
+                        runStart(vertx, verticleList, next, max).onComplete(nAr -> {
+                            if (nAr.succeeded()) {
+                                result.complete();
+                            } else {
+                                result.fail(nAr.cause());
+                            }
+                        });
                     } else {
-                        log.error("", ar.cause());
-                        result.fail(ar.cause());
+                        result.complete();
                     }
-                });
-            } catch (IllegalAccessException | InstantiationException e) {
-                log.error("", e);
-                result.fail(e);
-            }
+                } else {
+                    log.error("", ar.cause());
+                    result.fail(ar.cause());
+                }
+            });
         } else {
             log.error("Illegal boot class: {}", verticle.getName());
             result.fail("Illegal boot class: " + verticle.getName());
