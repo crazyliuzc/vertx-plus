@@ -1,4 +1,13 @@
 #配置文件结构
+#分布式配置
+cluster:
+  #是否开启
+  enable: false
+  #选用一个注册中心  
+  clusterName: hazelcast    
+  hazelcast: 
+    port: 8500
+    timeout: 5000
 #项目配置
 module:
   #模块名称，必须填写，并且作为package路径中一项，如com.公司缩写.模块名.    
@@ -15,15 +24,6 @@ http:
   site: https://www.abc.com
   #服务扫描路径，以英文逗号分隔
   servicePath: 
-#分布式配置
-cluster:
-  #是否开启
-  isCluster: false
-  #选用一个注册中心  
-  clusterName: hazelcast    
-  hazelcast: 
-    port: 8500
-    timeout: 5000
 #RsfRpc服务配置
 rsfRpc:
   #地址  
@@ -35,6 +35,7 @@ rsfRpc:
   #超时时间
   timeout: 
 #GRpc服务配置
+googleRpc: 
   #地址  
   host: 0.0.0.0
   #端口号  

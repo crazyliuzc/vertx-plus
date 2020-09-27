@@ -6,7 +6,6 @@ import io.vertx.config.ConfigStoreOptions;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import java.util.Comparator;
@@ -35,29 +34,40 @@ public class MainVerticle extends BaseStart {
      */
     @Override
     public Future<Void> action(Vertx vertx) {
-        JsonObject config = config();
         Promise<Void> result = Promise.promise();
-        getYaml(vertx).onComplete(rs -> {
+        JsonObject config = config();
+        getYaml(config).onComplete(rs -> {
             if (rs.succeeded()) {
+                //转换DeploymentOptions配置
+                //扫描启动服务，并按照顺序启动
+                result.complete();
             } else {
+                result.fail(rs.cause());
             }
         });
-        result.complete();
         return result.future();
     }
 
     /**
      * 获取项目配置信息，并转化成类
      *
-     * @param vertx
+     * @param config
      * @return
      */
-    public static Future<YamlBean> getYaml(Vertx vertx) {
+    public static Future<YamlBean> getYaml(JsonObject config) {
         Promise<YamlBean> result = Promise.promise();
+        Vertx vertx = Vertx.currentContext().owner();
         if (null != Constants.CONFIG) {
             result.complete(Constants.CONFIG);
+        } else if (null != config && !config.isEmpty()) {
+            //从外部json文件读取
+            log.info("Read configuration files from outside...");
+            Constants.CONFIG = new YamlBean(config);
+            log.info("The configuration file was read successfully...");
+            result.complete(Constants.CONFIG);
         } else {
-            log.info("Get Profile...");
+            //从内部yaml文件读取
+            log.info("Read configuration files from inside...");
             ConfigStoreOptions store = new ConfigStoreOptions()
                     .setType("file")
                     .setFormat("yaml")
@@ -67,14 +77,17 @@ public class MainVerticle extends BaseStart {
             ConfigRetriever retriever = ConfigRetriever.create(vertx,
                     new ConfigRetrieverOptions().addStore(store));
             retriever.getConfig(json -> {
+                //关闭配置文件
                 retriever.close();
+                //关闭公共启动用的临时vertx
+                vertx.close();
                 if (json.succeeded() && !json.result().isEmpty()) {
-                    Constants.CONFIG = new YamlBean(json.result().copy());
-                    log.info("Get Profile Success...");
+                    Constants.CONFIG = new YamlBean(json.result());
+                    log.info("The configuration file was read successfully...");
                     result.complete(Constants.CONFIG);
                 } else {
-                    log.error("Get Profile Error....");
-                    result.fail("Get Profile Error....");
+                    log.error("Failed to read the configuration file....");
+                    result.fail("Failed to read the configuration file....");
                 }
             });
         }
@@ -85,17 +98,19 @@ public class MainVerticle extends BaseStart {
      * start服务启动类
      *
      * @param vertx
+     * @param deploymentOptions
      * @param verticleSpan
      * @return
      */
-    public static Future<Void> runStart(Vertx vertx, String verticleSpan) {
+    public static Future<Void> runStart(Vertx vertx, DeploymentOptions deploymentOptions, String verticleSpan) {
         Promise<Void> result = Promise.promise();
-        if (ValidateUtil.isEmpty(verticleSpan)) {
-            log.error("Please fill in the start app path");
-            result.fail("Please fill in the start app path");
-            return result.future();
+        //默认扫描地址
+        String startSpan = "plus.vertx.core.startup";
+        if (ValidateUtil.isNotEmpty(verticleSpan)) {
+            //如果外包需要扫描别的,则合并路径字符串
+            startSpan += "," + verticleSpan;
         }
-        Set<Class<?>> verticles = LoadUtil.getClasses(verticleSpan, Start.class);
+        Set<Class<?>> verticles = LoadUtil.getClasses(startSpan, Start.class);
         if (ValidateUtil.isNotEmpty(verticles)) {
             //启动类排序,从大到小
             Comparator<Class<?>> comparator = (c1, c2) -> {
@@ -105,12 +120,11 @@ public class MainVerticle extends BaseStart {
             };
             List<Class<?>> verticleList = verticles.stream().sorted(comparator).collect(Collectors.toList());
             //递归从大到小顺序执行启动类
-            runStart(vertx, verticleList, 0, verticleList.size() - 1).onComplete(ar -> {
+            runStart(vertx, deploymentOptions, verticleList, 0, verticleList.size() - 1).onComplete(ar -> {
                 if (ar.succeeded()) {
                     result.complete();
                 } else {
                     result.fail(ar.cause());
-                    vertx.close();
                 }
             });
         } else {
@@ -124,21 +138,22 @@ public class MainVerticle extends BaseStart {
      * 递归start服务启动类
      *
      * @param vertx
+     * @param deploymentOptions
      * @param verticleList
      * @param index
      * @param max
      * @return
      */
-    public static Future<Void> runStart(Vertx vertx, List<Class<?>> verticleList, int index, int max) {
+    public static Future<Void> runStart(Vertx vertx, DeploymentOptions deploymentOptions, List<Class<?>> verticleList, int index, int max) {
         Promise<Void> result = Promise.promise();
         Class<?> verticle = verticleList.get(index);
         if (verticle.isAnnotationPresent(Start.class)) {
             log.info("start startVerticle: {}", verticle.getName());
-            VertxUtil.run(verticle, vertx, new DeploymentOptions()).onComplete(ar -> {
+            VertxUtil.run(verticle, vertx, deploymentOptions).onComplete(ar -> {
                 if (ar.succeeded()) {
                     if (index < max) {
                         int next = index + 1;
-                        runStart(vertx, verticleList, next, max).onComplete(nAr -> {
+                        runStart(vertx, deploymentOptions, verticleList, next, max).onComplete(nAr -> {
                             if (nAr.succeeded()) {
                                 result.complete();
                             } else {
@@ -149,11 +164,15 @@ public class MainVerticle extends BaseStart {
                         result.complete();
                     }
                 } else {
+                    //停止服务
+                    vertx.close();
                     log.error("", ar.cause());
                     result.fail(ar.cause());
                 }
             });
         } else {
+            //停止服务
+            vertx.close();
             log.error("Illegal boot class: {}", verticle.getName());
             result.fail("Illegal boot class: " + verticle.getName());
         }
