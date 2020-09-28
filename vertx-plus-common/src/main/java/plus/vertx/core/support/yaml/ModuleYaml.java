@@ -2,6 +2,7 @@ package plus.vertx.core.support.yaml;
 
 import io.vertx.core.json.JsonObject;
 import java.io.Serializable;
+import plus.vertx.core.support.BeanCopyUtil;
 
 /**
  * 项目配置
@@ -22,10 +23,6 @@ public class ModuleYaml implements Serializable {
     public ModuleYaml() {
     }
 
-    public JsonObject toJson() {
-        return JsonObject.mapFrom(this);
-    }
-
     public String getName() {
         return name;
     }
@@ -41,6 +38,5 @@ public class ModuleYaml implements Serializable {
     public void setStartScan(String startScan) {
         this.startScan = startScan;
     }
-
 
 }

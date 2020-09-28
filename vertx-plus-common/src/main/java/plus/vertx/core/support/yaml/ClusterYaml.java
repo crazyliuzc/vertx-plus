@@ -1,6 +1,5 @@
 package plus.vertx.core.support.yaml;
 
-import com.hazelcast.core.Hazelcast;
 import java.io.Serializable;
 
 /**
@@ -19,24 +18,9 @@ public class ClusterYaml implements Serializable {
     private Boolean enable;
 
     /**
-     * 启用哪一个分布式
+     * 启用哪一种分布式
      */
-    private ClusterType clusterType;
-    
-    /**
-     * 分布式名称
-     */
-    private String clusterName;
-    
-    /**
-     * 分布式密码
-     */
-    private String password;
-    
-    /**
-     * Hazelcast配置
-     */
-    private HazelcastYaml hazelcast;
+    private String type;
 
     private enum ClusterType {
         Hazelcast("Hazelcast"), Zookeeper("Zookeeper");
@@ -50,31 +34,48 @@ public class ClusterYaml implements Serializable {
         public String toString() {
             return this.clusterType;
         }
-
     }
-    
-    private class HazelcastYaml {
-        private int port;
-        private long timeout;
 
-        public HazelcastYaml() {
-        }
+    /**
+     * 分布式名称
+     */
+    private String name;
 
-        public int getPort() {
-            return port;
-        }
+    /**
+     * 分布式密码
+     */
+    private String password;
 
-        public void setPort(int port) {
-            this.port = port;
-        }
-
-        public long getTimeout() {
-            return timeout;
-        }
-
-        public void setTimeout(long timeout) {
-            this.timeout = timeout;
-        }
-        
+    public Boolean getEnable() {
+        return enable;
     }
+
+    public void setEnable(Boolean enable) {
+        this.enable = enable;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
 }

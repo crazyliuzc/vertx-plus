@@ -4,10 +4,13 @@ cluster:
   #是否开启
   enable: false
   #选用一个注册中心  
-  clusterName: hazelcast    
-  hazelcast: 
-    port: 8500
-    timeout: 5000
+  type: Hazelcast
+  #分布式名称
+  name: test   
+  #分布式密码
+  password: 123456
+  #分布式Tcp Ip集合,以英文逗号分隔
+  ip: 192.168.6.118
 #项目配置
 module:
   #模块名称，必须填写，并且作为package路径中一项，如com.公司缩写.模块名.    

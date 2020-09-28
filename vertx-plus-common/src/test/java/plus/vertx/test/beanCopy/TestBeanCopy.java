@@ -2,7 +2,12 @@ package plus.vertx.test.beanCopy;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import io.vertx.core.json.JsonObject;
 import plus.vertx.core.support.BeanCopyUtil;
+import plus.vertx.core.support.JsonUtil;
+import plus.vertx.core.support.yaml.ClusterYaml;
+import plus.vertx.core.support.yaml.YamlBean;
 
 /**
  * 测试cglib的Bean复制
@@ -53,6 +58,22 @@ public class TestBeanCopy {
         //map转proto Bean，不能转换
         HelloProto.Builder mapToBean2 = BeanCopyUtil.mapToBean(beanToMap1, HelloProto.newBuilder().getClass());
 
-        System.out.println("");        
+        System.out.println("");
+
+        YamlBean yamlBean = new YamlBean();
+        ClusterYaml clusterYaml = new ClusterYaml();
+        clusterYaml.setEnable(true);
+        clusterYaml.setName("tettt");
+        clusterYaml.setPassword("password");
+        clusterYaml.setType("telll");
+        yamlBean.setCluster(clusterYaml);
+        System.out.println(JsonUtil.toJson(BeanCopyUtil.copy(yamlBean,YamlBean.class),false));;
+
+        System.out.println(JsonUtil.toJson(BeanCopyUtil.beanToMap(yamlBean),false));
+
+        String aa = "{\"cluster\":{\"enable\":false,\"type\":\"Hazelcast\",\"name\":\"test\",\"password\":123456,\"ip\":\"192.168.6.118\"},\"module\":{\"name\":\"core\",\"startScan\":null},\"http\":{\"host\":\"0.0.0.0\",\"port\":6666,\"site\":\"https://www.abc.com\",\"servicePath\":null},\"rsfRpc\":{\"host\":\"0.0.0.0\",\"port\":6666,\"servicePath\":null,\"timeout\":null},\"googleRpc\":{\"host\":\"0.0.0.0\",\"port\":6666,\"servicePath\":null,\"timeout\":null},\"mapper\":{\"jdbcUrl\":\"jdbc:mysql://localhost:3306/myshop?useUnicode=true&characterEncoding=UTF-8&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai\",\"driverClassName\":\"com.mysql.cj.jdbc.Driver\",\"maximumPoolSize\":20,\"minPoolSize\":0,\"initialPoolSize\":1,\"minIdleTime\":1,\"timeBetweenEvictionRunsMillis\":1,\"keepAlive\":true,\"username\":\"root\",\"password\":\"company\",\"mapperScan\":\"xxx.xxx\",\"sqlXmlScan\":\"sql\"}}";
+        JsonObject entries = new JsonObject(aa);
+        YamlBean copy1 = BeanCopyUtil.mapToBean(entries.getMap(), YamlBean.class);
+        System.out.println(JsonUtil.toJson(copy1,false));
     }
 }

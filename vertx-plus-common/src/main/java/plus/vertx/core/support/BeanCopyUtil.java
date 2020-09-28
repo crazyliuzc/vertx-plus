@@ -1,20 +1,25 @@
 package plus.vertx.core.support;
 
+import net.sf.cglib.beans.BeanCopier;
+import net.sf.cglib.beans.BeanMap;
+import net.sf.cglib.core.Converter;
+import org.objenesis.ObjenesisStd;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-import net.sf.cglib.beans.BeanCopier;
-import net.sf.cglib.beans.BeanMap;
-import org.objenesis.ObjenesisStd;
 
 /**
  * 基于cglib的Bean复制
  * @author crazyliu
  */
 public class BeanCopyUtil {
+    public static final Logger log = LoggerFactory.getLogger(BeanCopyUtil.class);
     private BeanCopyUtil() {
     }
 
@@ -52,7 +57,15 @@ public class BeanCopyUtil {
      */
     public static <T> T copy(Object source, T target) {
         BeanCopier beanCopier = getCacheBeanCopier(source.getClass(), target.getClass());
-        beanCopier.copy(source, target, null);
+        beanCopier.copy(source, target, new Converter() {
+            @Override
+            public Object convert(Object value, Class target, Object context) {
+                if(target.isSynthetic()){
+                    BeanCopier.create(target, target, true).copy(value, value, this);
+                }
+                return value;
+            }
+        });
         return target;
     }
     
@@ -83,8 +96,37 @@ public class BeanCopyUtil {
      */
     public static <T> T mapToBean(Map<?, ?> source, Class<T> target) {
         T bean = objenesisStdThreadLocal.get().newInstance(target);
+        return mapToBean(source, bean);
+    }
+    
+    /**
+     * Map转实体
+     * @param <T>
+     * @param source
+     * @param bean
+     * @return 
+     */
+    public static <T> T mapToBean(Map<?, ?> source, T bean) {
         BeanMap beanMap = BeanMap.create(bean);
-        beanMap.putAll(source);
+        try {
+            for (Object k : source.keySet()) {
+                String key = k + "";
+                Object value = source.get(key);
+                if (null!=value) {
+                    if (value instanceof Map) {
+                        beanMap.put(key,mapToBean((Map)value,bean.getClass().getDeclaredField(key).getType()));
+                    } else if (value instanceof List) {
+                    } else {
+                        beanMap.put(key, value);
+                    }
+                } else {
+                    beanMap.put(key, value);
+                }
+            }
+        } catch (NoSuchFieldException | SecurityException e) {
+            log.error("",e);
+        }
+//        beanMap.putAll(source);
         return bean;
     }
 
@@ -108,6 +150,6 @@ public class BeanCopyUtil {
      */
     private static <S, T> BeanCopier getCacheBeanCopier(Class<S> source, Class<T> target) {
         ConcurrentHashMap<Class<?>, BeanCopier> copierConcurrentHashMap = cache.computeIfAbsent(source, aClass -> new ConcurrentHashMap<>(16));
-        return copierConcurrentHashMap.computeIfAbsent(target, aClass -> BeanCopier.create(source, target, false));
+        return copierConcurrentHashMap.computeIfAbsent(target, aClass -> BeanCopier.create(source, target, true));
     }
 }
