@@ -15,14 +15,14 @@ public class ClusterYaml implements Serializable {
     /**
      * 是否启用分布式
      */
-    private Boolean enable;
+    private boolean enable = false;
 
     /**
      * 启用哪一种分布式
      */
-    private String type;
+    private String type = "Hazelcast";
 
-    private enum ClusterType {
+    public enum ClusterType {
         Hazelcast("Hazelcast"), Zookeeper("Zookeeper");
         private final String clusterType;
 
@@ -46,11 +46,11 @@ public class ClusterYaml implements Serializable {
      */
     private String password;
 
-    public Boolean getEnable() {
+    public boolean getEnable() {
         return enable;
     }
 
-    public void setEnable(Boolean enable) {
+    public void setEnable(boolean enable) {
         this.enable = enable;
     }
 

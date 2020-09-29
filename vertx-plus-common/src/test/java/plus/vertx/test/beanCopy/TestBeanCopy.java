@@ -1,13 +1,13 @@
 package plus.vertx.test.beanCopy;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import io.vertx.core.json.JsonObject;
-import plus.vertx.core.support.BeanCopyUtil;
+import plus.vertx.core.support.CopyUtil;
 import plus.vertx.core.support.JsonUtil;
 import plus.vertx.core.support.yaml.ClusterYaml;
 import plus.vertx.core.support.yaml.YamlBean;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 测试cglib的Bean复制
@@ -21,14 +21,14 @@ public class TestBeanCopy {
         User user2 = new User();
         user2.setAge(10);
         user2.setName("zhangsan");
-        Map<?, ?> beanToMap = BeanCopyUtil.beanToMap(user2);
+        Map<String,Object> beanToMap = CopyUtil.toMap(user2);
         System.out.println(beanToMap);
-        User mapToBean = BeanCopyUtil.mapToBean(beanToMap, User.class);
+        User mapToBean = CopyUtil.toBean(beanToMap, User.class);
         System.out.println(mapToBean);
         //半转换
         Map map1 = new HashMap();
         map1.put("name", "江红");
-        User mapToBean1 = BeanCopyUtil.mapToBean(map1, User.class);
+        User mapToBean1 = CopyUtil.toBean(map1, User.class);
         System.out.println(mapToBean1);
 
         //属性名称相同类型相同的属性拷贝
@@ -36,7 +36,7 @@ public class TestBeanCopy {
         user.setAge(10);
         user.setName("zhangsan");
         UserDto userDto = new UserDto();
-        BeanCopyUtil.copy(user, userDto);
+        CopyUtil.copy(user, userDto);
         System.out.println(userDto);
 
         //属性名称相同而类型不同的属性不会被拷贝
@@ -45,18 +45,18 @@ public class TestBeanCopy {
         user1.setAge(10);
         user1.setName("zhangsan");
         UserWithDiffType userDto1 = new UserWithDiffType();
-        BeanCopyUtil.copy(user, userDto1);
+        CopyUtil.copy(user, userDto1);
         System.out.println(userDto1);
         
         //测试Proto转换
         HelloProto.Builder newBuilder = HelloProto.newBuilder();
         newBuilder.setMessage("测试一下");
         //proto Bean复制，不能复制
-        HelloProto.Builder copy = BeanCopyUtil.copy(newBuilder, HelloProto.newBuilder().getClass());
+        HelloProto.Builder copy = CopyUtil.copy(newBuilder, HelloProto.newBuilder().getClass());
         //proto Bean转map，可以转换，但是生成的map会多一些属性
-        Map<?, ?> beanToMap1 = BeanCopyUtil.beanToMap(newBuilder);
+        Map<String,Object> beanToMap1 = CopyUtil.toMap(newBuilder);
         //map转proto Bean，不能转换
-        HelloProto.Builder mapToBean2 = BeanCopyUtil.mapToBean(beanToMap1, HelloProto.newBuilder().getClass());
+        HelloProto.Builder mapToBean2 = CopyUtil.toBean(beanToMap1, HelloProto.newBuilder().getClass());
 
         System.out.println("");
 
@@ -67,13 +67,13 @@ public class TestBeanCopy {
         clusterYaml.setPassword("password");
         clusterYaml.setType("telll");
         yamlBean.setCluster(clusterYaml);
-        System.out.println(JsonUtil.toJson(BeanCopyUtil.copy(yamlBean,YamlBean.class),false));;
+        System.out.println(JsonUtil.toJson(CopyUtil.copy(yamlBean, YamlBean.class),false));;
 
-        System.out.println(JsonUtil.toJson(BeanCopyUtil.beanToMap(yamlBean),false));
+        System.out.println(JsonUtil.toJson(CopyUtil.toMap(yamlBean),false));
 
         String aa = "{\"cluster\":{\"enable\":false,\"type\":\"Hazelcast\",\"name\":\"test\",\"password\":123456,\"ip\":\"192.168.6.118\"},\"module\":{\"name\":\"core\",\"startScan\":null},\"http\":{\"host\":\"0.0.0.0\",\"port\":6666,\"site\":\"https://www.abc.com\",\"servicePath\":null},\"rsfRpc\":{\"host\":\"0.0.0.0\",\"port\":6666,\"servicePath\":null,\"timeout\":null},\"googleRpc\":{\"host\":\"0.0.0.0\",\"port\":6666,\"servicePath\":null,\"timeout\":null},\"mapper\":{\"jdbcUrl\":\"jdbc:mysql://localhost:3306/myshop?useUnicode=true&characterEncoding=UTF-8&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai\",\"driverClassName\":\"com.mysql.cj.jdbc.Driver\",\"maximumPoolSize\":20,\"minPoolSize\":0,\"initialPoolSize\":1,\"minIdleTime\":1,\"timeBetweenEvictionRunsMillis\":1,\"keepAlive\":true,\"username\":\"root\",\"password\":\"company\",\"mapperScan\":\"xxx.xxx\",\"sqlXmlScan\":\"sql\"}}";
         JsonObject entries = new JsonObject(aa);
-        YamlBean copy1 = BeanCopyUtil.mapToBean(entries.getMap(), YamlBean.class);
+        YamlBean copy1 = CopyUtil.toBean(entries.getMap(), YamlBean.class);
         System.out.println(JsonUtil.toJson(copy1,false));
     }
 }

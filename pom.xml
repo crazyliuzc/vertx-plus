@@ -44,6 +44,7 @@
         <error_prone_annotations.version>2.4.0</error_prone_annotations.version>
         <cglib.version>3.3.0</cglib.version>
         <objenesis.version>3.1</objenesis.version>
+        <org.mapstruct.version>1.4.0.Final</org.mapstruct.version>
         <!-- 项目模块-->
         <vertx-plus-common.version>0.0.1-SNAPSHOT</vertx-plus-common.version>
         <vertx-plus-http.version>0.0.1-SNAPSHOT</vertx-plus-http.version>
@@ -319,11 +320,19 @@
                 <artifactId>cglib</artifactId>
                 <version>${cglib.version}</version>
             </dependency>
-            
+
+            <!-- 实例化一个特定类的新对象-->
             <dependency>
                 <groupId>org.objenesis</groupId>
                 <artifactId>objenesis</artifactId>
                 <version>${objenesis.version}</version>
+            </dependency>
+
+            <!-- Object mapping-->
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${org.mapstruct.version}</version>
             </dependency>
 
             <!-- 项目模块-->
@@ -354,6 +363,13 @@
                     <testTarget>1.8</testTarget>
                     <encoding>UTF-8</encoding>
                     <parameters>true</parameters>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${org.mapstruct.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>

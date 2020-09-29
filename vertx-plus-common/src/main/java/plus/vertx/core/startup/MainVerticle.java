@@ -1,22 +1,25 @@
 package plus.vertx.core.startup;
 
+import com.hazelcast.config.Config;
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
-import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Future;
-import io.vertx.core.Promise;
-import io.vertx.core.Vertx;
+import io.vertx.core.*;
 import io.vertx.core.json.JsonObject;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import io.vertx.core.spi.cluster.ClusterManager;
+import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
 import plus.vertx.core.Constants;
 import plus.vertx.core.annotation.Start;
+import plus.vertx.core.support.CopyUtil;
 import plus.vertx.core.support.LoadUtil;
 import plus.vertx.core.support.ValidateUtil;
 import plus.vertx.core.support.VertxUtil;
+import plus.vertx.core.support.yaml.ClusterYaml;
 import plus.vertx.core.support.yaml.YamlBean;
 
 /**
@@ -39,8 +42,39 @@ public class MainVerticle extends BaseStart {
         getYaml(config).onComplete(rs -> {
             if (rs.succeeded()) {
                 //转换DeploymentOptions配置
-                //扫描启动服务，并按照顺序启动
-                result.complete();
+                YamlBean yamlBean = rs.result();
+                if (null==yamlBean) {
+                    log.error("找不到项目配置文件...");
+                    result.fail("找不到项目配置文件...");
+                } else {
+                    if (null==yamlBean.getCluster() || !yamlBean.getCluster().getEnable()) {
+                        //没有开启分布式
+                        Vertx commonVertx = Vertx.vertx();
+                        //扫描启动服务，并按照顺序启动
+                        result.complete();
+                    } else {
+                        //开启分布式
+                        ClusterYaml clusterYaml = yamlBean.getCluster();
+                        if (clusterYaml.getType().equals(ClusterYaml.ClusterType.Hazelcast)) {
+                            Config hazelcastConfig = new Config();
+                            ClusterManager mgr = new HazelcastClusterManager(hazelcastConfig);
+                            VertxOptions options = new VertxOptions().setClusterManager(mgr);
+                            Vertx.clusteredVertx(options, res -> {
+                                if (res.succeeded()) {
+                                    Vertx commonVertx = res.result();
+                                    //扫描启动服务，并按照顺序启动
+                                    result.complete();
+                                } else {
+                                    log.error("",res.cause());
+                                    result.fail(res.cause());
+                                }
+                            });
+                        } else {
+                            log.error("暂不支持其它分布式..");
+                            result.fail("暂不支持其它分布式..");
+                        }
+                    }
+                }
             } else {
                 result.fail(rs.cause());
             }
@@ -58,12 +92,16 @@ public class MainVerticle extends BaseStart {
         Promise<YamlBean> result = Promise.promise();
         Vertx vertx = Vertx.currentContext().owner();
         if (null != Constants.CONFIG) {
+            //关闭公共启动用的临时vertx
+            vertx.close();
             result.complete(Constants.CONFIG);
         } else if (null != config && !config.isEmpty()) {
             //从外部json文件读取
             log.info("Read configuration files from outside...");
-            Constants.CONFIG = new YamlBean(config);
+            Constants.CONFIG = CopyUtil.toBean(config,YamlBean.class);
             log.info("The configuration file was read successfully...");
+            //关闭公共启动用的临时vertx
+            vertx.close();
             result.complete(Constants.CONFIG);
         } else {
             //从内部yaml文件读取
@@ -82,7 +120,7 @@ public class MainVerticle extends BaseStart {
                 //关闭公共启动用的临时vertx
                 vertx.close();
                 if (json.succeeded() && !json.result().isEmpty()) {
-                    Constants.CONFIG = new YamlBean(json.result());
+                    Constants.CONFIG = CopyUtil.toBean(json.result(),YamlBean.class);
                     log.info("The configuration file was read successfully...");
                     result.complete(Constants.CONFIG);
                 } else {

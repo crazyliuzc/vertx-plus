@@ -1,8 +1,6 @@
 package plus.vertx.core.support.yaml;
 
-import io.vertx.core.json.JsonObject;
 import java.io.Serializable;
-import plus.vertx.core.support.BeanCopyUtil;
 
 /**
  * Yaml配置文件转化的实体
@@ -22,11 +20,6 @@ public class YamlBean implements Serializable {
     public YamlBean() {
     }
     
-    @SuppressWarnings("LeakingThisInConstructor")
-    public YamlBean(JsonObject config) {
-        BeanCopyUtil.mapToBean(config.getMap(), this);
-    }
-
     public ClusterYaml getCluster() {
         return cluster;
     }

@@ -1,8 +1,6 @@
 package plus.vertx.core.support.yaml;
 
-import io.vertx.core.json.JsonObject;
 import java.io.Serializable;
-import plus.vertx.core.support.BeanCopyUtil;
 
 /**
  * 项目配置

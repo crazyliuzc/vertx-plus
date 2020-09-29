@@ -51,7 +51,7 @@
             <groupId>com.google.errorprone</groupId>
             <artifactId>error_prone_annotations</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-common</artifactId>
@@ -105,38 +105,43 @@
             <groupId>io.vertx</groupId>
             <artifactId>vertx-config-yaml</artifactId>
         </dependency>
-         <dependency>
-                <groupId>io.vertx</groupId>
-                <artifactId>vertx-hazelcast</artifactId>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.hazelcast</groupId>
-                        <artifactId>hazelcast</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>io.vertx</groupId>
-                        <artifactId>vertx-core</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>com.hazelcast</groupId>
-                <artifactId>hazelcast</artifactId>
-            </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-hazelcast</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.hazelcast</groupId>
+                    <artifactId>hazelcast</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>io.vertx</groupId>
+                    <artifactId>vertx-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.objenesis</groupId>
             <artifactId>objenesis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
         </dependency>
 
     </dependencies>

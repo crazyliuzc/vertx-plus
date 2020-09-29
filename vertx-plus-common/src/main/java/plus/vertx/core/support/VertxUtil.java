@@ -1,15 +1,11 @@
 package plus.vertx.core.support;
 
-import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Future;
-import io.vertx.core.Promise;
-import io.vertx.core.Verticle;
-import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
+import io.vertx.core.*;
 import io.vertx.core.eventbus.EventBusOptions;
-import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.function.Consumer;
 
 /**
  * Vertx启动工具类
@@ -71,12 +67,7 @@ public class VertxUtil {
      * @return 
      */
     public static Future<String> run(Class clazz, Vertx vertx, DeploymentOptions deploymentOptions) {
-        try {
-            return run((Verticle)clazz.newInstance(), vertx, deploymentOptions);
-        } catch (IllegalAccessException | InstantiationException ex) {
-            log.error("",ex);
-            return Future.failedFuture(ex);
-        } 
+        return run((Verticle)BeanUtil.newInstance(clazz), vertx, deploymentOptions);
     }
 
 }
