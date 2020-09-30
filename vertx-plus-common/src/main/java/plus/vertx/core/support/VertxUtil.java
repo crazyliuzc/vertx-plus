@@ -60,6 +60,8 @@ public class VertxUtil {
      */
     public static Future<Vertx> getHazelcastVertx(String clusterName,String requiredMemberIp,int timeout) {
         Promise<Vertx> result = Promise.promise();
+        System.setProperty("hazelcast.logging.type", "slf4j");
+        System.setProperty("java.net.preferIPv4Stack", "true");
         Config hazelcastConfig = new Config();
         hazelcastConfig.setLiteMember(true);
         GroupConfig groupConfig = new GroupConfig();
