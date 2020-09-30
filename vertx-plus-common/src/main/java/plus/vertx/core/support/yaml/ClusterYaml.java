@@ -39,12 +39,17 @@ public class ClusterYaml implements Serializable {
     /**
      * 分布式名称
      */
-    private String name;
+    private String name = "dev";
 
     /**
-     * 分布式密码
+     * 分布式外部节点IP地址
      */
-    private String password;
+    private String address;
+
+    /**
+     * 分布式节点连接超时时间,单位秒,默认5秒
+     */
+    private int timeout = 5;
 
     public boolean getEnable() {
         return enable;
@@ -70,12 +75,19 @@ public class ClusterYaml implements Serializable {
         this.name = name;
     }
 
-    public String getPassword() {
-        return password;
+    public String getAddress() {
+        return address;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
+    public int getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
 }

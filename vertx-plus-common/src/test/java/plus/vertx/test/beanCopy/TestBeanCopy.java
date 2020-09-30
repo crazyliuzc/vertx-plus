@@ -64,7 +64,6 @@ public class TestBeanCopy {
         ClusterYaml clusterYaml = new ClusterYaml();
         clusterYaml.setEnable(true);
         clusterYaml.setName("tettt");
-        clusterYaml.setPassword("password");
         clusterYaml.setType("telll");
         yamlBean.setCluster(clusterYaml);
         System.out.println(JsonUtil.toJson(CopyUtil.copy(yamlBean, YamlBean.class),false));;
