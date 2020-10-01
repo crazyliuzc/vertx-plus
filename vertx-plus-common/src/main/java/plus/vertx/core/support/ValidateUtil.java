@@ -58,10 +58,7 @@ public class ValidateUtil {
      * @return
      */
     public static boolean isNumeric(String str) {
-        if (isEmpty(str)) {
-            return false;
-        }
-        return NUMERIC_REGEX.matcher(str).matches();
+        return !isEmpty(str) && NUMERIC_REGEX.matcher(str).matches();
     }
 
     /**
@@ -71,10 +68,7 @@ public class ValidateUtil {
      * @return boolean
      */
     public static boolean isStartWithWord(String str) {
-        if (isEmpty(str)) {
-            return false;
-        }
-        return START_WITH_WORD_REGEX.matcher(str).matches();
+        return !isEmpty(str) && START_WITH_WORD_REGEX.matcher(str).matches();
     }
 
     /**
@@ -100,10 +94,7 @@ public class ValidateUtil {
      * @return boolean
      */
     public static boolean hasChinese(String str) {
-        if (isEmpty(str)) {
-            return false;
-        }
-        return CHINESE_REGEX.matcher(str).find();
+        return !isEmpty(str) && CHINESE_REGEX.matcher(str).find();
     }
 
     /**
@@ -112,7 +103,7 @@ public class ValidateUtil {
      * @return boolean
      */
     public static boolean isChineseLanguage() {
-        return Locale.getDefault().getLanguage().equals("zh");
+        return "zh".equals(Locale.getDefault().getLanguage());
     }
 
     //===========================集合校验============================

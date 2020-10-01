@@ -2,7 +2,7 @@
 #分布式配置
 cluster:
   #是否开启
-  enable: true
+  enable: false
   #选用一个注册中心  
   type: Hazelcast
   #分布式名称
