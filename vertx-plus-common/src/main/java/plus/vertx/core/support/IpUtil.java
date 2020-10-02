@@ -32,7 +32,8 @@ public class IpUtil {
                 NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
                 for (Enumeration inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements();) {
                     InetAddress inetAddr = (InetAddress) inetAddrs.nextElement();
-                    if (!inetAddr.isLoopbackAddress()) {// 排除loopback类型地址
+                    if (!inetAddr.isLoopbackAddress()) {
+                        // 排除loopback类型地址
                         if (inetAddr.isSiteLocalAddress()) {
                             return inetAddr;
                         } else if (candidateAddress == null) {
@@ -44,8 +45,7 @@ public class IpUtil {
             if (candidateAddress != null) {
                 return candidateAddress;
             }
-            InetAddress jdkSuppliedAddress = InetAddress.getLocalHost();
-            return jdkSuppliedAddress;
+            return InetAddress.getLocalHost();
         } catch (SocketException | UnknownHostException e) {
             log.error("",e);
             return null;

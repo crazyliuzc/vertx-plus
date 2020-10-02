@@ -33,8 +33,8 @@ public abstract class BaseStart extends AbstractVerticle {
     /**
      * 具体执行类
      *
-     * @param vertx
-     * @return
+     * @param vertx 关键参数
+     * @return 返回启动结果
      */
     public Future<Void> action(Vertx vertx) {
         Promise<Void> result = Promise.promise();

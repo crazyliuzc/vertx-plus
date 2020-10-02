@@ -63,8 +63,8 @@ public class SeqUtil {
 
     /**
      * 根据序列号ID获取时间戳
-     * @param id
-     * @return
+     * @param id 传入生成id
+     * @return 返回时间戳
      */
     public static long getTimeFromId(long id){
         return SNOWFLAKE.get().getTimestamp(id);

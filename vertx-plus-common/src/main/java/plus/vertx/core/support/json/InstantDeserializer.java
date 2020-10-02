@@ -19,7 +19,7 @@ public class InstantDeserializer  extends JsonDeserializer<Instant> {
     }
 
     @Override
-    public Instant deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public Instant deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         String text = p.getText();
 
         try {

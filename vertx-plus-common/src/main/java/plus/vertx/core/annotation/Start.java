@@ -13,7 +13,7 @@ public @interface Start {
 
     /**
      * 启动顺序，数字越大越先注册
-     * @return 
+     * @return 执行顺序
      */
     long order() default 2;
 }

@@ -20,18 +20,18 @@ public class BeanUtil {
      *  会抛出异常的构造函数（Constructors that throw exceptions）
      *  因此，常见的是在类库中看到类必须要有一个默认的构造函数的限制，Objenesis旨在通过绕过对象实例化的构造函数来克服这些限制。
      */
-    private static final ThreadLocal<ObjenesisStd> objenesisStdThreadLocal = ThreadLocal.withInitial(ObjenesisStd::new);
+    private static final ThreadLocal<ObjenesisStd> OBJENESIS_STD_THREADLOCAL = ThreadLocal.withInitial(ObjenesisStd::new);
 
     public BeanUtil() {
     }
 
     /**
      * 实例化实体
-     * @param target
-     * @param <T>
-     * @return
+     * @param target 类
+     * @param <T> 类型
+     * @return 返回实例化
      */
     public static <T> T newInstance(Class<T> target) {
-        return objenesisStdThreadLocal.get().newInstance(target);
+        return OBJENESIS_STD_THREADLOCAL.get().newInstance(target);
     }
 }

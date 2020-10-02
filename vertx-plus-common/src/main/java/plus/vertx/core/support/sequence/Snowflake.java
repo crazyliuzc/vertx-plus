@@ -24,21 +24,40 @@ public class Snowflake {
      */
     private final long epochMilli = 1583478594543L;
 
-    // Datetime length
+    /**
+     * Datetime length
+     */
     private final long timestampBits = 41L;
-    // Data identifier id length
+    /**
+     * Data identifier id length
+     */
     private final long datacenterIdBits = 5L;
-    // Worker id length
+    /**
+     * Worker id length
+     */
     private final long workerIdBits = 5L;
-    // Sequence length
+    /**
+     * Sequence length
+     */
     private final long sequenceBits = 12L;
 
-    // max values of timeStamp, workerId, datacenterId and sequence
-    private final long maxDatacenterId = ~(-1L << datacenterIdBits); // 2^5-1
-    private final long maxWorkerId = ~(-1L << workerIdBits); // 2^5-1
-    private final long maxSequence = ~(-1L << sequenceBits); // 2^12-1
+    /**
+     * max values of timeStamp, workerId, datacenterId and sequence
+     * 2^5-1
+     */
+    private final long maxDatacenterId = ~(-1L << datacenterIdBits);
+    /**
+     * 2^5-1
+     */
+    private final long maxWorkerId = ~(-1L << workerIdBits);
+    /**
+     * 2^12-1
+     */
+    private final long maxSequence = ~(-1L << sequenceBits);
 
-    // left shift bits of timeStamp, workerId and datacenterId
+    /**
+     * left shift bits of timeStamp, workerId and datacenterId
+     */
     private final long timestampShift = sequenceBits + datacenterIdBits + workerIdBits;
     private final long datacenterIdShift = sequenceBits + workerIdBits;
     private final long workerIdShift = sequenceBits;
@@ -133,7 +152,8 @@ public class Snowflake {
         }
         if (currTimestamp == lastTimestamp) {
             sequence = (sequence + 1) & maxSequence;
-            if (sequence == 0) { // overflow: greater than max sequence
+            if (sequence == 0) {
+                // overflow: greater than max sequence
                 currTimestamp = waitNextMillis(currTimestamp);
             }
         } else { // reset to 0 for next period/millisecond

@@ -47,8 +47,7 @@ public class VertxUtil {
                 .setMaxWorkerExecuteTime(Long.MAX_VALUE)
                 .setWarningExceptionTime(Long.MAX_VALUE)
                 .setPreferNativeTransport(true);
-        Vertx vertx = Vertx.vertx(vertxOptions);
-        return vertx;
+        return Vertx.vertx(vertxOptions);
     }
 
     /**

@@ -17,7 +17,7 @@ import java.io.IOException;
  */
 public class JsonObjectDeserializer extends JsonDeserializer<JsonObject> {
     @Override
-    public JsonObject deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public JsonObject deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         ObjectCodec codec = p.getCodec();
         JsonNode node = codec.readTree(p);
         return new JsonObject(node.toString());

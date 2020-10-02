@@ -15,7 +15,9 @@ import java.util.stream.Collectors;
 
 /**
  * 服务启动类
- * Created by crazyliu on 2020/9/30.
+ *
+ * @author crazyliu
+ * @date 2020/9/30
  */
 public class StartVerticle extends BaseStart {
     @Override
@@ -57,12 +59,12 @@ public class StartVerticle extends BaseStart {
     /**
      * 递归start服务启动类
      *
-     * @param vertx
-     * @param deploymentOptions
-     * @param verticleList
-     * @param index
-     * @param max
-     * @return
+     * @param vertx 启动参数
+     * @param deploymentOptions 启动参数
+     * @param verticleList 待启动的服务列表
+     * @param index 当前启动的服务标识
+     * @param max 带启动的服务列表个数
+     * @return 返回结果
      */
     public static Future<Void> runStart(Vertx vertx, DeploymentOptions deploymentOptions, List<Class<?>> verticleList, int index, int max) {
         Promise<Void> result = Promise.promise();

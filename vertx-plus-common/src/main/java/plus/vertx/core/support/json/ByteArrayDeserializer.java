@@ -18,7 +18,7 @@ public class ByteArrayDeserializer extends JsonDeserializer<byte[]> {
     }
 
     @Override
-    public byte[] deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public byte[] deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         String text = p.getText();
 
         try {

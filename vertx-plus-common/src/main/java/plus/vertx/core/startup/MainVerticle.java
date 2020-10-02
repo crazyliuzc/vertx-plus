@@ -27,8 +27,8 @@ public class MainVerticle extends BaseStart {
     /**
      * 按照顺序启动start注释服务类
      *
-     * @param vertx
-     * @return
+     * @param vertx 启动参数
+     * @return 返回启动结果
      */
     @Override
     public Future<Void> action(Vertx vertx) {
@@ -51,12 +51,12 @@ public class MainVerticle extends BaseStart {
                                 //扫描启动服务，并按照顺序启动
                                 DeploymentOptions deploymentOptions = new DeploymentOptions();
                                 deploymentOptions.setWorker(true);
-                                VertxUtil.run(new StartVerticle(),commonVertx,deploymentOptions).onComplete(Sar -> {
-                                    if (Sar.succeeded()) {
+                                VertxUtil.run(new StartVerticle(),commonVertx,deploymentOptions).onComplete(sAr -> {
+                                    if (sAr.succeeded()) {
                                         result.complete();
                                     } else {
-                                        log.error("", Sar.cause());
-                                        result.fail(Sar.cause());
+                                        log.error("", sAr.cause());
+                                        result.fail(sAr.cause());
                                     }
                                 });
                             } else {
@@ -69,12 +69,12 @@ public class MainVerticle extends BaseStart {
                                             //扫描启动服务，并按照顺序启动
                                             DeploymentOptions deploymentOptions = new DeploymentOptions();
                                             deploymentOptions.setWorker(true);
-                                            VertxUtil.run(new StartVerticle(),commonVertx,deploymentOptions).onComplete(Sar->{
-                                                if (Sar.succeeded()) {
+                                            VertxUtil.run(new StartVerticle(),commonVertx,deploymentOptions).onComplete(sAr->{
+                                                if (sAr.succeeded()) {
                                                     result.complete();
                                                 } else {
-                                                    log.error("",Sar.cause());
-                                                    result.fail(Sar.cause());
+                                                    log.error("",sAr.cause());
+                                                    result.fail(sAr.cause());
                                                 }
                                             });
                                         } else {
@@ -103,8 +103,8 @@ public class MainVerticle extends BaseStart {
     /**
      * 获取项目配置信息，并转化成类
      *
-     * @param config
-     * @return
+     * @param config 获取到的json参数
+     * @return 返回公共配置文件参数
      */
     public static Future<YamlBean> getYaml(JsonObject config) {
         Promise<YamlBean> result = Promise.promise();

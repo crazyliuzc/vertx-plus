@@ -48,7 +48,7 @@ public class JsonUtil {
      * 获取Jackson实例
      *
      * @param isNumberToStr 是否数字转字符串
-     * @return
+     * @return 返回ObjectMapper对象
      */
     public static ObjectMapper get(boolean isNumberToStr) {
         ObjectMapper objectMapper = OBJECT_MAPPER.get();
@@ -82,12 +82,12 @@ public class JsonUtil {
             if (isNumberToStr) {
                 if (t instanceof MessageOrBuilder) {
                     //Proto转换
-                    return toJson(new JsonObject(tempStr), isNumberToStr);
+                    return toJson(new JsonObject(tempStr), true);
                 } else if (t instanceof List
                         && ValidateUtil.isNotEmpty((List) t)
                         && ((List) t).get(0) instanceof MessageOrBuilder) {
                     //Proto转换
-                    return toJson(new JsonArray(tempStr), isNumberToStr);
+                    return toJson(new JsonArray(tempStr), true);
                 } else {
                     return tempStr;
                 }
@@ -231,8 +231,6 @@ public class JsonUtil {
             UpperCamelCase: 驼峰策略 - 单词首字母大写其它小写，不添加连接符；即老版本中的
             * */
             objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE);
-//            jacksonObjectMapperBuilder.propertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE);
-//            jacksonObjectMapperBuilder.modulesToInstall(ProtobufModule.class);
 
             return objectMapper;
         }
