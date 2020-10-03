@@ -1,4 +1,4 @@
-package plus.vertx.test.beanCopy;
+package plus.vertx.test.beanCopy.protoBean;
 
 /**
  *
@@ -31,7 +31,7 @@ public class HelloProtoDaoOuterClass {
 
     static {
         java.lang.String[] descriptorData = {
-            "\n\023HelloWorldDao.proto\022\016com.ywmapp.dao\"$\n"
+            "\n\023HelloWorldDao.protoBean\022\016com.ywmapp.dao\"$\n"
             + "\021HelloWorldRequest\022\017\n\007message\030\001 \001(\t\"5\n\022H"
             + "elloWorldResponse\022\017\n\007message\030\001 \001(\t\022\016\n\006st"
             + "atus\030\002 \001(\005*:\n\rServingStatus\022\013\n\007UNKNOWN\020\000"

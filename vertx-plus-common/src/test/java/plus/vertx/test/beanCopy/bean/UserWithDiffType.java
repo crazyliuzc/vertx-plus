@@ -1,19 +1,19 @@
-package plus.vertx.test.beanCopy;
+package plus.vertx.test.beanCopy.bean;
 
 /**
  *
  * @author crazyliu
  */
-public class UserDto {
+public class UserWithDiffType {
 
-    private int age;
+    private Integer age;
     private String name;
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 

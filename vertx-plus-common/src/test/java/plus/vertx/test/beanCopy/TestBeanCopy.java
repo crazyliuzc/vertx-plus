@@ -5,6 +5,10 @@ import plus.vertx.core.support.CopyUtil;
 import plus.vertx.core.support.JsonUtil;
 import plus.vertx.core.support.yaml.ClusterYaml;
 import plus.vertx.core.support.yaml.YamlBean;
+import plus.vertx.test.beanCopy.bean.User;
+import plus.vertx.test.beanCopy.bean.UserDto;
+import plus.vertx.test.beanCopy.bean.UserWithDiffType;
+import plus.vertx.test.beanCopy.protoBean.HelloProto;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,9 +55,9 @@ public class TestBeanCopy {
         //测试Proto转换
         HelloProto.Builder newBuilder = HelloProto.newBuilder();
         newBuilder.setMessage("测试一下");
-        //proto Bean复制，不能复制
+        //protoBean Bean复制，不能复制
         HelloProto.Builder copy = CopyUtil.copy(newBuilder, HelloProto.newBuilder().getClass());
-        //proto Bean转map，可以转换，但是生成的map会多一些属性
+        //protoBean Bean转map，可以转换，但是生成的map会多一些属性
         Map<String,Object> beanToMap1 = CopyUtil.toMap(newBuilder);
         //map转proto Bean，不能转换
         HelloProto.Builder mapToBean2 = CopyUtil.toBean(beanToMap1, HelloProto.newBuilder().getClass());

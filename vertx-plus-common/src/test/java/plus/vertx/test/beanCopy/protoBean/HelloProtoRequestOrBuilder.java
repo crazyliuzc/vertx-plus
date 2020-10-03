@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package plus.vertx.test.beanCopy;
+package plus.vertx.test.beanCopy.protoBean;
 
 /**
  *

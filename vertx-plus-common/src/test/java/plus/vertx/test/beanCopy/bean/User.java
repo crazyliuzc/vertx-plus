@@ -1,4 +1,4 @@
-package plus.vertx.test.beanCopy;
+package plus.vertx.test.beanCopy.bean;
 
 /**
  *
