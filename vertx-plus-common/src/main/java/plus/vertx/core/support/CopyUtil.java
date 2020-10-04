@@ -29,14 +29,14 @@ public class CopyUtil {
     /**
      * 缓存BeanCopier
      */
-    private static final ConcurrentHashMap<Class<?>, ConcurrentHashMap<Class<?>, BeanCopier>> cache = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Class<?>, ConcurrentHashMap<Class<?>, BeanCopier>> CACHE = new ConcurrentHashMap<>();
 
     /**
      * 实体复制
-     * @param <T>
-     * @param source
-     * @param target
-     * @return 
+     * @param <T> 待复制的类型
+     * @param source 待复制的实体
+     * @param target 目标实体
+     * @return 复制后的实体
      */
     public static <T> T copy(Object source, Class<T> target) {
         return copy(source, BeanUtil.newInstance(target));
@@ -44,15 +44,15 @@ public class CopyUtil {
     
     /**
      * 实体复制(深复制)
-     * @param <T>
-     * @param source
-     * @param target
-     * @return 
+     * @param <T> 待复制的类型
+     * @param source 待复制的实体
+     * @param target 目标实体
+     * @return 复制后的实体
      */
     public static <T> T copy(Object source, T target) {
         //如果待复制的实体是google protocol,则另外处理
         if (target instanceof MessageOrBuilder) {
-            return JsonUtil.toEntity(JsonUtil.toJson(source,false), (Class<T>) target.getClass());
+            return JsonUtil.toEntity(JsonUtil.toJson(source,false), (Class<T>)target.getClass());
         } else {
             BeanCopier beanCopier = getCacheBeanCopier(source.getClass(), target.getClass());
             beanCopier.copy(source, target, new Converter() {
@@ -184,7 +184,7 @@ public class CopyUtil {
      * @return 
      */
     private static <S, T> BeanCopier getCacheBeanCopier(Class<S> source, Class<T> target) {
-        ConcurrentHashMap<Class<?>, BeanCopier> copierConcurrentHashMap = cache.computeIfAbsent(source, aClass -> new ConcurrentHashMap<>(16));
+        ConcurrentHashMap<Class<?>, BeanCopier> copierConcurrentHashMap = CACHE.computeIfAbsent(source, aClass -> new ConcurrentHashMap<>(16));
         return copierConcurrentHashMap.computeIfAbsent(target, aClass -> BeanCopier.create(source, target, true));
     }
 }

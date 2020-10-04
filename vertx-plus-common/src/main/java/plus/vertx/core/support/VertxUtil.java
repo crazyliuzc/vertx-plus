@@ -32,7 +32,7 @@ public class VertxUtil {
     
     /**
      * 获取vertx
-     * @return
+     * @return vertx
      */
     public static Vertx getVertx() {
         EventBusOptions eventBusOptions = new EventBusOptions();
@@ -53,13 +53,15 @@ public class VertxUtil {
     /**
      * 创建Hazelcast分布式
      * @param clusterName 分布式名称
-     * @param requiredMemberIp
+     * @param requiredMemberIp 外部成员IP
      * @param timeout 分布式节点连接超时时间,单位秒,默认5秒
-     * @return
+     * @return vertx
      */
     public static Future<Vertx> getHazelcastVertx(String clusterName,String requiredMemberIp,int timeout) {
         Promise<Vertx> result = Promise.promise();
+        //Hazelcast的日志格式，可以使用slf4j，也可以选择不记录日志none
         System.setProperty("hazelcast.logging.type", "slf4j");
+        //强制Hazelcast使用IPv4，因为Hazelcast默认选择IPv6
         System.setProperty("java.net.preferIPv4Stack", "true");
         Config hazelcastConfig = new Config();
         hazelcastConfig.setLiteMember(true);
@@ -115,11 +117,13 @@ public class VertxUtil {
                 .setMaxWorkerExecuteTime(Long.MAX_VALUE)
                 .setWarningExceptionTime(Long.MAX_VALUE)
                 .setPreferNativeTransport(true);
+        log.info("尝试加入Hazelcast分布式服务节点...");
         Vertx.clusteredVertx(options, res -> {
             if (res.succeeded()) {
+                log.info("成功加入Hazelcast分布式服务节点");
                 result.complete(res.result());
             } else {
-                log.error("",res.cause());
+                log.error("加入Hazelcast分布式服务节点失败",res.cause());
                 result.fail(res.cause());
             }
         });
@@ -128,10 +132,10 @@ public class VertxUtil {
     
     /**
      * 执行verticle类
-     * @param verticle
-     * @param vertx
-     * @param deploymentOptions
-     * @return 
+     * @param verticle 待执行的服务
+     * @param vertx 系统参数
+     * @param deploymentOptions 服务参数
+     * @return vertx
      */
     public static Future<String> run(Verticle verticle, Vertx vertx, DeploymentOptions deploymentOptions) {
         Promise<String> result = Promise.promise();
@@ -152,10 +156,10 @@ public class VertxUtil {
     
     /**
      * 执行verticle类
-     * @param clazz
-     * @param vertx
-     * @param deploymentOptions
-     * @return 
+     * @param clazz 待执行的服务类
+     * @param vertx 系统参数
+     * @param deploymentOptions 服务参数
+     * @return vertx
      */
     public static Future<String> run(Class clazz, Vertx vertx, DeploymentOptions deploymentOptions) {
         return run((Verticle)BeanUtil.newInstance(clazz), vertx, deploymentOptions);
