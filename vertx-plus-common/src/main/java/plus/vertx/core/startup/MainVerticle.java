@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import plus.vertx.core.Constants;
 import plus.vertx.core.support.CopyUtil;
+import plus.vertx.core.support.ValidateUtil;
 import plus.vertx.core.support.VertxUtil;
 import plus.vertx.core.support.yaml.ClusterYaml;
 import plus.vertx.core.support.yaml.YamlBean;
@@ -107,23 +108,50 @@ public class MainVerticle extends BaseStart {
      * @return 返回公共配置文件参数
      */
     public static Future<YamlBean> getYaml(JsonObject config) {
+        return getYaml(config,"");
+    }
+
+    /**
+     * 获取项目配置信息，并转化成类
+     *
+     * @param config 获取到的json参数
+     * @param profileName 配置文件名
+     * @return 返回公共配置文件参数
+     */
+    public static Future<YamlBean> getYaml(JsonObject config,String profileName) {
         Promise<YamlBean> result = Promise.promise();
         if (null != Constants.CONFIG) {
             result.complete(Constants.CONFIG);
         } else if (null != config && !config.isEmpty()) {
-            //从外部json文件读取
-            log.info("Read configuration files from outside...");
-            Constants.CONFIG = CopyUtil.toBean(config,YamlBean.class);
-            log.info("The configuration file was read successfully...");
-            result.complete(Constants.CONFIG);
+            if (config.containsKey(Constants.PROFILE_NAME)) {
+                //自定义配置文件名
+                getYaml(null,config.getString(Constants.PROFILE_NAME)).onComplete(yAr->{
+                    if (yAr.succeeded()) {
+                        result.complete(yAr.result());
+                    } else {
+                        log.error("",yAr.cause());
+                        result.fail(yAr.cause());
+                    }
+                });
+            } else {
+                //从外部json文件读取
+                log.info("Read configuration files from outside...");
+                Constants.CONFIG = CopyUtil.toBean(config,YamlBean.class);
+                log.info("The configuration file was read successfully...");
+                result.complete(Constants.CONFIG);
+            }
         } else {
             //从内部yaml文件读取
             log.info("Read configuration files from inside...");
+            if (ValidateUtil.isEmpty(profileName)) {
+                //如果没有自定义配置文件名,则取默认的
+                profileName = Constants.PROFILE_YAML;
+            }
             ConfigStoreOptions store = new ConfigStoreOptions()
                     .setType("file")
                     .setFormat("yaml")
                     .setConfig(new JsonObject()
-                            .put("path", Constants.PROFILE_YAML)
+                            .put("path", profileName)
                     );
             ConfigRetriever retriever = ConfigRetriever.create(
                     Vertx.currentContext().owner(),

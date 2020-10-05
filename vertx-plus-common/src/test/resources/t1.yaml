@@ -1,0 +1,65 @@
+#配置文件结构
+#分布式配置
+cluster:
+  #是否开启
+  enable: false
+  #选用一个注册中心  
+  type: Hazelcast
+  #分布式名称
+  name: dev
+  #分布式Tcp Ip集合,以英文逗号分隔
+  address: 192.168.124.15
+  #分布式节点连接超时时间,单位秒,默认5秒
+  timeout: 5
+#项目配置
+module:
+  #模块名称，必须填写，并且作为package路径中一项，如com.公司缩写.模块名.    
+  name: core
+  #模式启动项服务扫描路径，默认先扫描plus.vertx，可以添加其它，以英文逗号分隔
+  startScan: plus.vertx.test.cluster
+#Http服务配置    
+http:
+  #地址  
+  host: 0.0.0.0
+  #端口号  
+  port: 6666
+  #外网访问地址  
+  site: https://www.abc.com
+  #服务扫描路径，以英文逗号分隔
+  servicePath: 
+#RsfRpc服务配置
+rsfRpc:
+  #地址  
+  host: 0.0.0.0
+  #端口号  
+  port: 6666    
+  #服务扫描路径，以英文逗号分隔
+  servicePath:   
+  #超时时间
+  timeout: 
+#GRpc服务配置
+googleRpc: 
+  #地址  
+  host: 0.0.0.0
+  #端口号  
+  port: 6666
+  #服务扫描路径，以英文逗号分隔
+  servicePath:   
+  #超时时间
+  timeout: 
+#数据库配置
+mapper:
+  jdbcUrl: jdbc:mysql://localhost:3306/myshop?useUnicode=true&characterEncoding=UTF-8&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+  driverClassName: com.mysql.cj.jdbc.Driver
+  maximumPoolSize: 20
+  minPoolSize: 0
+  initialPoolSize: 1
+  minIdleTime: 1
+  timeBetweenEvictionRunsMillis: 1
+  keepAlive: true
+  username: root
+  password: company
+  mapperScan: xxx.xxx
+  sqlXmlScan: sql
+#CDN配置
+#支付配置

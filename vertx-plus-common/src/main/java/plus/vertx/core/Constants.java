@@ -16,6 +16,11 @@ public class Constants extends AbstractVerticle {
     final private static Logger log = LoggerFactory.getLogger(Constants.class);
 
     /**
+     * 配置文件key
+     */
+    public static final String PROFILE_NAME = "profileName";
+
+    /**
      * 配置文件名
      */
     public static final String PROFILE_YAML = "my-config.yaml";
