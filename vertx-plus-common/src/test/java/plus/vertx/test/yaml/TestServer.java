@@ -9,8 +9,9 @@ import javax.annotation.Resource;
  *
  * @author crazyliu
  */
-public class TestYaml {
+@Resource(name = "server.yaml")
+public class TestServer {
     public static void main(String[] args) {
-        VertxApplication.run(TestYaml.class);
+        VertxApplication.run(TestServer.class);
     }
 }

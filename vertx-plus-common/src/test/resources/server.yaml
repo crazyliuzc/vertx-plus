@@ -2,7 +2,7 @@
 #分布式配置
 cluster:
   #是否开启
-  enable: false
+  enable: true
   #选用一个注册中心  
   type: Hazelcast
   #分布式名称
@@ -16,7 +16,7 @@ module:
   #模块名称，必须填写，并且作为package路径中一项，如com.公司缩写.模块名.    
   name: core
   #模式启动项服务扫描路径，默认先扫描plus.vertx，可以添加其它，以英文逗号分隔
-  startScan: plus.vertx.test.cluster
+  startScan: plus.vertx.test.cluster.testEventBus.server
 #Http服务配置    
 http:
   #地址  
