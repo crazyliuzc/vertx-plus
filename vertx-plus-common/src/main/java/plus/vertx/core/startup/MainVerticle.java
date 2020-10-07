@@ -14,6 +14,7 @@ import plus.vertx.core.Constants;
 import plus.vertx.core.support.CopyUtil;
 import plus.vertx.core.support.ValidateUtil;
 import plus.vertx.core.support.VertxUtil;
+import plus.vertx.core.support.cluster.HazelcastVertx;
 import plus.vertx.core.support.yaml.ClusterYaml;
 import plus.vertx.core.support.yaml.YamlBean;
 
@@ -32,8 +33,7 @@ public class MainVerticle extends BaseStart {
      * @return 返回启动结果
      */
     @Override
-    public Future<Void> action(Vertx vertx) {
-        Promise<Void> result = Promise.promise();
+    public Future<Void> action(Vertx vertx, Promise<Void> result) {
         JsonObject config = config();
         getYaml(config).onComplete(rs -> {
             //关闭公共启动用的临时vertx,关闭后在当前后续方法再取反射取不到
@@ -64,7 +64,7 @@ public class MainVerticle extends BaseStart {
                                 //开启分布式
                                 ClusterYaml clusterYaml = yamlBean.getCluster();
                                 if (clusterYaml.getType().equals(ClusterYaml.ClusterType.Hazelcast.toString())) {
-                                    VertxUtil.getHazelcastVertx(clusterYaml.getName(),clusterYaml.getAddress(),clusterYaml.getTimeout()).onComplete(hAr->{
+                                    HazelcastVertx.getHazelcastVertx(clusterYaml.getName(), clusterYaml.getAddress(), clusterYaml.getTimeout()).onComplete(hAr->{
                                         if (hAr.succeeded()) {
                                             Vertx commonVertx = hAr.result();
                                             //扫描启动服务，并按照顺序启动

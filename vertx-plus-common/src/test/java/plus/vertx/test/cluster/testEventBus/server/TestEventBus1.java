@@ -13,8 +13,7 @@ import plus.vertx.core.support.SeqUtil;
 @Start(order = 11)
 public class TestEventBus1 extends BaseStart {
     @Override
-    public Future<Void> action(Vertx vertx) {
-        Promise<Void> result = Promise.promise();
+    public Future<Void> action(Vertx vertx, Promise<Void> result) {
         String message = SeqUtil.getId();
         log.info("啦啦啦，这是消息接收方，序列号{}", message);
         vertx.eventBus().consumer("test-event-bus-server",ar->{

@@ -21,7 +21,7 @@ public abstract class BaseStart extends AbstractVerticle {
 
     @Override
     public void start(Promise<Void> startPromise) throws Exception {
-        action(vertx).onComplete(ar -> {
+        action(vertx,Promise.<Void>promise()).onComplete(ar -> {
             if (ar.succeeded()) {
                 startPromise.complete();
             } else {
@@ -34,10 +34,10 @@ public abstract class BaseStart extends AbstractVerticle {
      * 具体执行类
      *
      * @param vertx 关键参数
+     * @param result 返回值参数
      * @return 返回启动结果
      */
-    public Future<Void> action(Vertx vertx) {
-        Promise<Void> result = Promise.promise();
+    public Future<Void> action(Vertx vertx,Promise<Void> result) {
         result.complete();
         return result.future();
     }

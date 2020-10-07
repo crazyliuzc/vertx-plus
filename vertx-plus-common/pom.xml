@@ -105,6 +105,8 @@
             <groupId>io.vertx</groupId>
             <artifactId>vertx-config-yaml</artifactId>
         </dependency>
+
+        <!-- 分布式Hazelcast，可以更换-->
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-hazelcast</artifactId>
@@ -118,10 +120,12 @@
                     <artifactId>vertx-core</artifactId>
                 </exclusion>
             </exclusions>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.hazelcast</groupId>
             <artifactId>hazelcast</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

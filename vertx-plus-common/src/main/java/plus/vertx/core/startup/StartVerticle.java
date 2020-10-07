@@ -21,8 +21,7 @@ import java.util.stream.Collectors;
  */
 public class StartVerticle extends BaseStart {
     @Override
-    public Future<Void> action(Vertx vertx) {
-        Promise<Void> result = Promise.promise();
+    public Future<Void> action(Vertx vertx, Promise<Void> result) {
         //默认扫描地址
         String startSpan = "plus.vertx.core.startup";
         String verticleSpan = Constants.CONFIG.getModule().getStartScan();
