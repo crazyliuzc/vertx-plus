@@ -10,7 +10,6 @@ import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import plus.vertx.core.startup.BaseStart;
 import plus.vertx.core.support.IpUtil;
 import plus.vertx.core.support.ValidateUtil;
 
