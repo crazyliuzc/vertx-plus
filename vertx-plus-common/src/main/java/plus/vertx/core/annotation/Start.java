@@ -16,4 +16,10 @@ public @interface Start {
      * @return 执行顺序
      */
     long order() default 2;
+
+    /**
+     * 是否多线程池Verticle
+     * @return 判断是否是多线程池Verticle
+     */
+    boolean isWorker() default true;
 }
