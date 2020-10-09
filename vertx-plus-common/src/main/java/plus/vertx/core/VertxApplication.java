@@ -6,6 +6,7 @@ import io.vertx.core.json.JsonObject;
 import plus.vertx.core.startup.MainVerticle;
 import plus.vertx.core.support.ValidateUtil;
 import plus.vertx.core.support.VertxUtil;
+import plus.vertx.core.support.cluster.SingleVertx;
 
 import javax.annotation.Resource;
 
@@ -23,7 +24,7 @@ public class VertxApplication {
      * @param profileName
      */
     public static void run(String profileName) {
-        Vertx vertx = VertxUtil.getVertx();
+        Vertx vertx = SingleVertx.getVertx();
         DeploymentOptions deploymentOptions = new DeploymentOptions();
         JsonObject jsonObject = new JsonObject();
         if (ValidateUtil.isEmpty(profileName)) {
