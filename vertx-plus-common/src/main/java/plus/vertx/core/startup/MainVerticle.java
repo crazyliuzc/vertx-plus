@@ -24,7 +24,6 @@ import plus.vertx.core.support.yaml.YamlBean;
  * @author crazyliu
  */
 public class MainVerticle extends BaseStart {
-    public static final Logger log = LoggerFactory.getLogger(MainVerticle.class);
 
     /**
      * 按照顺序启动start注释服务类
