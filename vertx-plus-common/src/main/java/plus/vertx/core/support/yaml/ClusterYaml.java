@@ -9,6 +9,11 @@ import java.io.Serializable;
  */
 public class ClusterYaml implements Serializable {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = -5071897041463099816L;
+
     public ClusterYaml() {
     }
 

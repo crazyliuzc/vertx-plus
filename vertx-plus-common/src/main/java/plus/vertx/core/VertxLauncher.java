@@ -1,13 +1,11 @@
 package plus.vertx.core;
 
+import static io.vertx.core.logging.LoggerFactory.LOGGER_DELEGATE_FACTORY_CLASS_NAME;
+import static io.vertx.core.spi.resolver.ResolverProvider.DISABLE_DNS_RESOLVER_PROP_NAME;
+
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import io.netty.util.internal.logging.Log4J2LoggerFactory;
 import io.vertx.core.logging.Log4j2LogDelegateFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static io.vertx.core.logging.LoggerFactory.LOGGER_DELEGATE_FACTORY_CLASS_NAME;
-import static io.vertx.core.spi.resolver.ResolverProvider.DISABLE_DNS_RESOLVER_PROP_NAME;
 
 /**
  * vertx启动工具类
@@ -16,7 +14,7 @@ import static io.vertx.core.spi.resolver.ResolverProvider.DISABLE_DNS_RESOLVER_P
  * @author crazyliu
  */
 public class VertxLauncher extends io.vertx.core.Launcher {
-    private static final Logger log = LoggerFactory.getLogger(VertxLauncher.class);
+    // private static final Logger log = LoggerFactory.getLogger(VertxLauncher.class);
 
     static {
         //默认日志框架为log4j2

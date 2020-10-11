@@ -8,6 +8,11 @@ import java.io.Serializable;
  */
 public class YamlBean implements Serializable {
     /**
+     *
+     */
+    private static final long serialVersionUID = -2136132874479545050L;
+
+    /**
      * 分布式配置
      */
     private ClusterYaml cluster;

@@ -1,9 +1,8 @@
 package plus.vertx.core;
 
-import io.vertx.core.AbstractVerticle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.io.File;
+
+import io.vertx.core.AbstractVerticle;
 import plus.vertx.core.support.yaml.YamlBean;
 
 /**
@@ -12,8 +11,6 @@ import plus.vertx.core.support.yaml.YamlBean;
  * @author crazyliu
  */
 public class Constants extends AbstractVerticle {
-
-    final private static Logger log = LoggerFactory.getLogger(Constants.class);
 
     /**
      * 配置文件key

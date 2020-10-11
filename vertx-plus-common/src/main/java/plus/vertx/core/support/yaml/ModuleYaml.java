@@ -10,6 +10,10 @@ import java.io.Serializable;
 public class ModuleYaml implements Serializable {
 
     /**
+     *
+     */
+    private static final long serialVersionUID = 388759209559686936L;
+    /**
      * 模块项目名
      */
     private String name;
