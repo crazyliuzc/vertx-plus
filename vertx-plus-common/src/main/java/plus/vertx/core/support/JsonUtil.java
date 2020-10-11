@@ -75,6 +75,10 @@ public class JsonUtil {
         return objectMapper;
     }
 
+    public static <T> String toJson(T t) {
+        return toJson(t, false);
+    }
+
     public static <T> String toJson(T t, boolean isNumberToStr) {
         try {
             ObjectMapper objectMapper = get(isNumberToStr);
