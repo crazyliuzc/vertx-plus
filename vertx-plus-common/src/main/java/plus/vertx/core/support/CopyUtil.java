@@ -52,7 +52,7 @@ public class CopyUtil {
     public static <T> T copy(Object source, T target) {
         //如果待复制的实体是google protocol,则另外处理
         if (target instanceof MessageOrBuilder) {
-            return JsonUtil.toEntity(JsonUtil.toJson(source,false), (Class<T>)target.getClass());
+            return JsonUtil.toEntity(JsonUtil.toJson(source,false), CastUtil.<Class<T>>cast(target.getClass()));
         } else {
             BeanCopier beanCopier = getCacheBeanCopier(source.getClass(), target.getClass());
             beanCopier.copy(source, target, new Converter() {
@@ -152,7 +152,7 @@ public class CopyUtil {
      * @return
      */
     public static <T> T toBean(String source, T bean) {
-        return JsonUtil.toEntity(source, (Class<T>) bean.getClass());
+        return JsonUtil.toEntity(source, CastUtil.<Class<T>>cast(bean.getClass()));
     }
 
     /**

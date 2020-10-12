@@ -88,8 +88,8 @@ public class JsonUtil {
                     //Proto转换
                     return toJson(new JsonObject(tempStr), true);
                 } else if (t instanceof List
-                        && ValidateUtil.isNotEmpty((List) t)
-                        && ((List) t).get(0) instanceof MessageOrBuilder) {
+                        && ValidateUtil.isNotEmpty((List<?>) t)
+                        && ((List<?>) t).get(0) instanceof MessageOrBuilder) {
                     //Proto转换
                     return toJson(new JsonArray(tempStr), true);
                 } else {
@@ -126,13 +126,12 @@ public class JsonUtil {
      *
      * @param <T>
      * @param json
-     * @param collectionClass
      * @param elementClass
      * @return
      */
-    public static <T> List<T> toList(String json, Class<? extends List> collectionClass, Class<T> elementClass) {
+    public static <T> List<T> toList(String json, Class<T> elementClass) {
         ObjectMapper objectMapper = get();
-        JavaType javaType = objectMapper.getTypeFactory().constructCollectionType(collectionClass, elementClass);
+        JavaType javaType = objectMapper.getTypeFactory().constructCollectionType(List.class, elementClass);
         try {
             return objectMapper.readValue(json, javaType);
         } catch (JsonProcessingException e) {
@@ -144,11 +143,10 @@ public class JsonUtil {
     /**
      * 将json转化成List
      *
-     * @param <T>
      * @param json
      * @return
      */
-    public static <T> List<T> toList(String json) {
+    public static List<Object> toList(String json) {
         ObjectMapper objectMapper = get();
         JavaType javaType = objectMapper.getTypeFactory().constructCollectionType(List.class, Object.class);
         try {
@@ -170,10 +168,10 @@ public class JsonUtil {
      * @param valueClass
      * @return
      */
-    public static <K, V> Map<K, V> toMap(String json, Class<? extends Map> mapClass, Class<K> keyClass,
+    public static <K, V> Map<K, V> toMap(String json, Class<K> keyClass,
                                          Class<V> valueClass) {
         ObjectMapper objectMapper = get();
-        JavaType javaType = objectMapper.getTypeFactory().constructMapType(mapClass, keyClass, valueClass);
+        JavaType javaType = objectMapper.getTypeFactory().constructMapType(Map.class, keyClass, valueClass);
         try {
             return objectMapper.readValue(json, javaType);
         } catch (JsonProcessingException e) {

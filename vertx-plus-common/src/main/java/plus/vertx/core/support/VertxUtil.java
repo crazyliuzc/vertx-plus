@@ -57,8 +57,8 @@ public class VertxUtil {
      * @param deploymentOptions 服务参数
      * @return vertx
      */
-    public static Future<String> run(Class clazz, Vertx vertx, DeploymentOptions deploymentOptions) {
-        return run((Verticle)BeanUtil.newInstance(clazz), vertx, deploymentOptions);
+    public static Future<String> run(Class<? extends Verticle> clazz, Vertx vertx, DeploymentOptions deploymentOptions) {
+        return run(BeanUtil.newInstance(clazz), vertx, deploymentOptions);
     }
 
 }

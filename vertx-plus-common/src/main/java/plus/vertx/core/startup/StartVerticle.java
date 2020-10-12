@@ -1,17 +1,21 @@
 package plus.vertx.core.startup;
 
-import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Future;
-import io.vertx.core.Promise;
-import io.vertx.core.Vertx;
-import plus.vertx.core.Constants;
-import plus.vertx.core.annotation.Start;
-import plus.vertx.core.support.*;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Future;
+import io.vertx.core.Promise;
+import io.vertx.core.Verticle;
+import io.vertx.core.Vertx;
+import plus.vertx.core.Constants;
+import plus.vertx.core.annotation.Start;
+import plus.vertx.core.support.CastUtil;
+import plus.vertx.core.support.ScanUtil;
+import plus.vertx.core.support.ValidateUtil;
+import plus.vertx.core.support.VertxUtil;
 
 /**
  * 服务启动类
@@ -37,7 +41,9 @@ public class StartVerticle extends BaseStart {
                 Start verticle2 = c2.getAnnotation(Start.class);
                 return Long.compare(verticle2.order(), verticle1.order());
             };
-            List<Class<?>> verticleList = verticles.stream().sorted(comparator).collect(Collectors.toList());
+            List<Class<?>> verticleList = verticles.stream()
+                .sorted(comparator)
+                .collect(Collectors.toList());
             //递归从大到小顺序执行启动类
             DeploymentOptions deploymentOptions = new DeploymentOptions();
             deploymentOptions.setWorker(true);
@@ -68,9 +74,19 @@ public class StartVerticle extends BaseStart {
     public static Future<Void> runStart(Vertx vertx, DeploymentOptions deploymentOptions, List<Class<?>> verticleList, int index, int max) {
         Promise<Void> result = Promise.promise();
         Class<?> verticle = verticleList.get(index);
-        if (verticle.isAnnotationPresent(Start.class)) {
+        if (!verticle.isAnnotationPresent(Start.class)) {
+            //启动类没有添加启动注解,停止服务
+            vertx.close();
+            log.error("启动类没有添加启动注解: {}", verticle.getName());
+            result.fail("启动类没有添加启动注解: " + verticle.getName());
+        } else if (!Verticle.class.isAssignableFrom(verticle)) {
+            //启动类没有实现Verticle,停止服务
+            vertx.close();
+            log.error("启动类没有实现Verticle: {}", verticle.getName());
+            result.fail("启动类没有实现Verticle: " + verticle.getName());
+        } else {
             log.info("start startVerticle: {}", verticle.getName());
-            VertxUtil.run(verticle, vertx, deploymentOptions).onComplete(ar -> {
+            VertxUtil.run(CastUtil.<Class<? extends Verticle>>cast(verticle), vertx, deploymentOptions).onComplete(ar -> {
                 if (ar.succeeded()) {
                     if (index < max) {
                         int next = index + 1;
@@ -87,15 +103,10 @@ public class StartVerticle extends BaseStart {
                 } else {
                     //停止服务
                     vertx.close();
-                    log.error("", ar.cause());
+                    log.error("启动"+verticle.getName()+"失败:", ar.cause());
                     result.fail(ar.cause());
                 }
             });
-        } else {
-            //停止服务
-            vertx.close();
-            log.error("Illegal boot class: {}", verticle.getName());
-            result.fail("Illegal boot class: " + verticle.getName());
         }
         return result.future();
     }
