@@ -1,14 +1,9 @@
 package plus.vertx.test.beanCopy;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.common.collect.Maps;
-
+import io.vertx.core.json.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import io.vertx.core.json.JsonObject;
 import plus.vertx.core.support.CopyUtil;
 import plus.vertx.core.support.JsonUtil;
 import plus.vertx.core.support.yaml.ClusterYaml;
@@ -16,7 +11,9 @@ import plus.vertx.core.support.yaml.YamlBean;
 import plus.vertx.test.beanCopy.bean.User;
 import plus.vertx.test.beanCopy.bean.UserDto;
 import plus.vertx.test.beanCopy.bean.UserWithDiffType;
-import plus.vertx.test.beanCopy.protoBean.HelloProto;
+import plus.vertx.test.beanCopy.protoBean.HelloRequest;
+
+import java.util.Map;
 
 /**
  * 测试cglib的Bean复制
@@ -58,19 +55,6 @@ public class TestBeanCopy {
         CopyUtil.copy(user, userDto1);
         log.info(JsonUtil.toJson(userDto1));
         
-        //测试Proto转换
-        HelloProto.Builder newBuilder = HelloProto.newBuilder();
-        newBuilder.setMessage("测试一下");
-        log.info(JsonUtil.toJson(newBuilder.build()));
-        //protoBean Bean复制，不能复制
-        HelloProto.Builder copy = CopyUtil.copy(newBuilder, HelloProto.newBuilder().getClass());
-        //protoBean Bean转map，可以转换，但是生成的map会多一些属性
-        Map<String,Object> beanToMap1 = CopyUtil.toMap(newBuilder);
-        //map转proto Bean，不能转换
-        HelloProto.Builder mapToBean2 = CopyUtil.toBean(beanToMap1, HelloProto.newBuilder().getClass());
-/* 
-        log.info("");
-
         YamlBean yamlBean = new YamlBean();
         ClusterYaml clusterYaml = new ClusterYaml();
         clusterYaml.setEnable(true);
@@ -84,6 +68,24 @@ public class TestBeanCopy {
         String aa = "{\"cluster\":{\"enable\":false,\"type\":\"Hazelcast\",\"name\":\"test\",\"password\":123456,\"ip\":\"192.168.6.118\"},\"module\":{\"name\":\"core\",\"startScan\":null},\"http\":{\"host\":\"0.0.0.0\",\"port\":6666,\"site\":\"https://www.abc.com\",\"servicePath\":null},\"rsfRpc\":{\"host\":\"0.0.0.0\",\"port\":6666,\"servicePath\":null,\"timeout\":null},\"googleRpc\":{\"host\":\"0.0.0.0\",\"port\":6666,\"servicePath\":null,\"timeout\":null},\"mapper\":{\"jdbcUrl\":\"jdbc:mysql://localhost:3306/myshop?useUnicode=true&characterEncoding=UTF-8&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai\",\"driverClassName\":\"com.mysql.cj.jdbc.Driver\",\"maximumPoolSize\":20,\"minPoolSize\":0,\"initialPoolSize\":1,\"minIdleTime\":1,\"timeBetweenEvictionRunsMillis\":1,\"keepAlive\":true,\"username\":\"root\",\"password\":\"company\",\"mapperScan\":\"xxx.xxx\",\"sqlXmlScan\":\"sql\"}}";
         JsonObject entries = new JsonObject(aa);
         YamlBean copy1 = CopyUtil.toBean(entries.getMap(), YamlBean.class);
-        log.info(JsonUtil.toJson(copy1,false)); */
+        log.info(JsonUtil.toJson(copy1,false));
+
+        //测试Proto转换
+        HelloRequest.Builder newBuilder = HelloRequest.newBuilder();
+        newBuilder.setMessage("测试一下");
+        log.info(JsonUtil.toJson(newBuilder.build()));
+        //protoBean Bean复制
+        HelloRequest.Builder copy2 = CopyUtil.copy(newBuilder, HelloRequest.newBuilder().getClass());
+        log.info(JsonUtil.toJson(copy2));
+        HelloRequest.Builder copy3 = CopyUtil.copy(newBuilder, HelloRequest.newBuilder());
+        log.info(JsonUtil.toJson(copy3));
+        //protoBean Bean转map，可以转换
+         Map<String,Object> beanToMap1 = CopyUtil.toMap(newBuilder);
+        log.info(JsonUtil.toJson(beanToMap1));
+        //map转proto Bean
+        HelloRequest.Builder mapToBean2 = CopyUtil.toBean(beanToMap1, HelloRequest.newBuilder().getClass());
+        log.info(JsonUtil.toJson(mapToBean2));
+        HelloRequest.Builder mapToBean3 = CopyUtil.toBean(beanToMap1, HelloRequest.newBuilder());
+        log.info(JsonUtil.toJson(mapToBean3));
     }
 }
