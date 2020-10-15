@@ -21,7 +21,6 @@ import plus.vertx.core.support.VertxUtil;
  * 服务启动类
  *
  * @author crazyliu
- * @date 2020/9/30
  */
 public class StartVerticle extends BaseStart {
     @Override
@@ -45,9 +44,7 @@ public class StartVerticle extends BaseStart {
                 .sorted(comparator)
                 .collect(Collectors.toList());
             //递归从大到小顺序执行启动类
-            DeploymentOptions deploymentOptions = new DeploymentOptions();
-            deploymentOptions.setWorker(true);
-            runStart(vertx, deploymentOptions, verticleList, 0, verticleList.size() - 1).onComplete(ar -> {
+            runStart(vertx, verticleList, 0, verticleList.size() - 1).onComplete(ar -> {
                 if (ar.succeeded()) {
                     result.complete();
                 } else {
@@ -65,13 +62,12 @@ public class StartVerticle extends BaseStart {
      * 递归start服务启动类
      *
      * @param vertx 启动参数
-     * @param deploymentOptions 启动参数
      * @param verticleList 待启动的服务列表
      * @param index 当前启动的服务标识
      * @param max 带启动的服务列表个数
      * @return 返回结果
      */
-    public static Future<Void> runStart(Vertx vertx, DeploymentOptions deploymentOptions, List<Class<?>> verticleList, int index, int max) {
+    public static Future<Void> runStart(Vertx vertx, List<Class<?>> verticleList, int index, int max) {
         Promise<Void> result = Promise.promise();
         Class<?> verticle = verticleList.get(index);
         if (!verticle.isAnnotationPresent(Start.class)) {
@@ -86,11 +82,15 @@ public class StartVerticle extends BaseStart {
             result.fail("启动类没有实现Verticle: " + verticle.getName());
         } else {
             log.info("start startVerticle: {}", verticle.getName());
+            Start verticleAnnotation = verticle.getAnnotation(Start.class);
+            //设置启动参数
+            DeploymentOptions deploymentOptions = new DeploymentOptions();
+            deploymentOptions.setWorker(verticleAnnotation.isWorker());
             VertxUtil.run(CastUtil.<Class<? extends Verticle>>cast(verticle), vertx, deploymentOptions).onComplete(ar -> {
                 if (ar.succeeded()) {
                     if (index < max) {
                         int next = index + 1;
-                        runStart(vertx, deploymentOptions, verticleList, next, max).onComplete(nAr -> {
+                        runStart(vertx, verticleList, next, max).onComplete(nAr -> {
                             if (nAr.succeeded()) {
                                 result.complete();
                             } else {

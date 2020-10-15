@@ -13,6 +13,7 @@ import plus.vertx.core.support.CopyUtil;
 import plus.vertx.core.support.ValidateUtil;
 import plus.vertx.core.support.VertxUtil;
 import plus.vertx.core.support.cluster.HazelcastVertx;
+import plus.vertx.core.support.cluster.SingleVertx;
 import plus.vertx.core.support.yaml.ClusterYaml;
 import plus.vertx.core.support.yaml.YamlBean;
 
@@ -45,7 +46,7 @@ public class MainVerticle extends BaseStart {
                         } else {
                             if (null==yamlBean.getCluster() || !yamlBean.getCluster().getEnable()) {
                                 //没有开启分布式
-                                Vertx commonVertx = Vertx.vertx();
+                                Vertx commonVertx = SingleVertx.getVertx();
                                 //扫描启动服务，并按照顺序启动
                                 DeploymentOptions deploymentOptions = new DeploymentOptions();
                                 deploymentOptions.setWorker(true);

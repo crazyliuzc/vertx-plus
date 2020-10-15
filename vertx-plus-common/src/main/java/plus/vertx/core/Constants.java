@@ -1,9 +1,9 @@
 package plus.vertx.core;
 
-import java.io.File;
-
 import io.vertx.core.AbstractVerticle;
 import plus.vertx.core.support.yaml.YamlBean;
+
+import java.io.File;
 
 /**
  * 常量表
@@ -38,22 +38,6 @@ public class Constants extends AbstractVerticle {
      * 配置文件类
      */
     public static YamlBean CONFIG;
-
-    private static volatile Constants constants;
-
-    private Constants() {
-    }
-
-    public static Constants getInstance() {
-        if (constants == null) {
-            synchronized (Constants.class) {
-                if (constants == null) {
-                    constants = new Constants();
-                }
-            }
-        }
-        return constants;
-    }
 
     //===========================常用方法============================
 }
