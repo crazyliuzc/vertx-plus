@@ -8,8 +8,18 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <name>vertx-plus-eventbus-rpc</name>
+    <artifactId>vertx-plus-eventbus-rpc</artifactId>
+    <packaging>jar</packaging>
+    <version>0.0.1-SNAPSHOT</version>
 
-    <artifactId>vertx-plus-service</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>plus.vertx</groupId>
+            <artifactId>vertx-plus-common</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
 
 </project>

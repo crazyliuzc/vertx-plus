@@ -10,8 +10,7 @@
     <modules>
         <module>vertx-plus-common</module>
         <module>vertx-plus-http</module>
-        <module>vertx-plus-mapper</module>
-        <module>vertx-plus-service</module>
+        <module>vertx-plus-eventbus-rpc</module>
     </modules>
     <packaging>pom</packaging>
     <name>vertx-plus</name>

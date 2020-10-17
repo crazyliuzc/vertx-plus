@@ -86,6 +86,7 @@ public class StartVerticle extends BaseStart {
             //设置启动参数
             DeploymentOptions deploymentOptions = new DeploymentOptions();
             deploymentOptions.setWorker(verticleAnnotation.isWorker());
+            deploymentOptions.setInstances(verticleAnnotation.instances());
             VertxUtil.run(CastUtil.<Class<? extends Verticle>>cast(verticle), vertx, deploymentOptions).onComplete(ar -> {
                 if (ar.succeeded()) {
                     if (index < max) {

@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Start {
+public @interface EventBusRpc {
 
     /**
      * 启动顺序，数字越大越先注册
