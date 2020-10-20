@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 接收消息处理类(公共)
  *
- * @author 刘则昌
+ * @author crazyliu
  */
 public class MessageStyle implements Handler<Message<JsonObject>> {
     public static final Logger LOGGER = LoggerFactory.getLogger(MessageStyle.class);

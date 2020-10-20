@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 /**
  * 验证工具
  *
- * @author 刘则昌
+ * @author crazyliu
  * @since 2020年06月05日
  */
 public class ValidateUtil {
