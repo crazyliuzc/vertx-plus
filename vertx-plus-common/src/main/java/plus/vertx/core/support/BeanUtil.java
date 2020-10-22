@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 实体工具类
- * Created by crazyliu on 2020/9/29.
+ * @author crazyliu
  */
 public class BeanUtil {
 

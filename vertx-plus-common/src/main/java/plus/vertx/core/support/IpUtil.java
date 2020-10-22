@@ -11,7 +11,7 @@ import java.util.Enumeration;
 
 /**
  * Ip工具类
- * Created by crazyliu on 2020/9/30.
+ * @author crazyliu
  */
 public class IpUtil {
     private static final Logger log = LoggerFactory.getLogger(IpUtil.class);
