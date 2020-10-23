@@ -7,7 +7,6 @@ import io.vertx.core.eventbus.EventBusOptions;
 /**
  * 单机Vertx
  * @author crazyliu
- * @date 2020年10月7日, 0007
  */
 public class SingleVertx {
     /**

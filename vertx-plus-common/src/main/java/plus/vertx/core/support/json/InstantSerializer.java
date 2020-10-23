@@ -9,6 +9,7 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 
 /**
+ * Instant序列化器
  * @author crazyliu
  */
 public class InstantSerializer extends JsonSerializer<Instant> {

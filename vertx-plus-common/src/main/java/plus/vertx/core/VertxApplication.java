@@ -17,7 +17,7 @@ import static io.vertx.core.logging.LoggerFactory.LOGGER_DELEGATE_FACTORY_CLASS_
 import static io.vertx.core.spi.resolver.ResolverProvider.DISABLE_DNS_RESOLVER_PROP_NAME;
 
 /**
- * 启动类
+ * Vertx常规启动类
  * @author crazyliu
  */
 public class VertxApplication {

@@ -10,7 +10,7 @@ import io.vertx.core.json.JsonObject;
 import java.io.IOException;
 
 /**
- * JsonObject解析
+ * JsonObject反序列化器
  *
  * @author crazyliu
  */

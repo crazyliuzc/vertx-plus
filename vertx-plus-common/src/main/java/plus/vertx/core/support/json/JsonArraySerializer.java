@@ -8,6 +8,7 @@ import io.vertx.core.json.JsonArray;
 import java.io.IOException;
 
 /**
+ * JsonArray序列化器
  * @author crazyliu
  */
 public class JsonArraySerializer extends JsonSerializer<JsonArray> {

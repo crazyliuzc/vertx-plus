@@ -14,8 +14,8 @@ import plus.vertx.core.support.IpUtil;
 import plus.vertx.core.support.ValidateUtil;
 
 /**
+ * Hazelcast分布式Vertx
  * @author crazyliu
- * @date 2020年10月7日, 0007
  */
 public class HazelcastVertx {
     public static final Logger log = LoggerFactory.getLogger(HazelcastVertx.class);

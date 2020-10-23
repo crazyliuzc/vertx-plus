@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
 import java.util.Base64;
 /**
+ * ByteArray序列化器
  * @author crazyliu
  */
 public class ByteArraySerializer extends JsonSerializer<byte[]> {

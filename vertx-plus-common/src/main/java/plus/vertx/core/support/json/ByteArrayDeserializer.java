@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 /**
+ * ByteArray反序列化器
  * @author crazyliu
  */
 public class ByteArrayDeserializer extends JsonDeserializer<byte[]> {

@@ -8,7 +8,7 @@ import io.netty.util.internal.logging.Log4J2LoggerFactory;
 import io.vertx.core.logging.Log4j2LogDelegateFactory;
 
 /**
- * vertx启动工具类
+ * vertx命令启动工具类
  * 命令：vertx -cp xx.jar --launcher-class=plus.vertx.core.VertxLauncher run xxx --vertx-id=xxx -conf xxx.conf
  *
  * @author crazyliu
