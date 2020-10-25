@@ -1,6 +1,7 @@
 package plus.vertx.core.support.eventBusRpc;
 
 import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonObject;
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ public class MessageStyle implements Handler<Message<JsonObject>> {
     @Override
     public void handle(Message<JsonObject> msg) {
         if (msg.body() != null) {
+            Vertx.currentContext().executeBlocking(b->{}, r->{});
 //            msg.reply(new JsonObject().put("code",HttpCode.OK.value()));
 //            msg.fail(HttpCode.BAD_REQUEST.value(), "consul set fail");
         } else {

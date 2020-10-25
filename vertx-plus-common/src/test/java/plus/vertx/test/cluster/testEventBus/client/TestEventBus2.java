@@ -16,7 +16,11 @@ public class TestEventBus2 extends BaseStart {
     public Future<Void> action(Vertx vertx, Promise<Void> result) {
         String message = SeqUtil.getId();
         log.info("啦啦啦，这是消息发送方，序列号{}", message);
+        log.info("send... Vertx.currentContext().isWorkerContext(): {}", Vertx.currentContext().isWorkerContext());
+        Vertx.currentContext().put("trans", "测试一下咯");
         vertx.eventBus().request("test-event-bus-server",message,ar->{
+            log.info("back... Vertx.currentContext().isWorkerContext(): {}", Vertx.currentContext().isWorkerContext());
+            log.info("trans: {}", Vertx.currentContext().<String>get("trans"));
             if (ar.succeeded()) {
                 log.info(ar.result().body().toString());
             } else {
