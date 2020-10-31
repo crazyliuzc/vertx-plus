@@ -117,7 +117,7 @@ public class ScanUtil {
         proxyCc.writeFile("D:/tmp");
      
         // 5.生成代理实例. 将入参InvocationHandler h设置到代理类的InvocationHandler h变量
-        @SuppressWarnings("unchecked")
+        // @SuppressWarnings("unchecked")
         Object proxy = proxyCc.toClass().getConstructor(InvocationHandler.class).newInstance(h);
      
         return proxy;
