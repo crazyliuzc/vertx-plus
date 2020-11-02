@@ -1,100 +1,89 @@
 package plus.vertx.core.support;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.vertx.core.Context;
+import io.vertx.core.Future;
+import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
+import io.vertx.core.shareddata.Counter;
+import io.vertx.core.shareddata.SharedData;
+
 /**
- * 53 bits unique id:
- *
- * |--------|--------|--------|--------|--------|--------|--------|--------|
- * |00000000|00011111|11111111|11111111|11111111|11111111|11111111|11111111|
- * |--------|---xxxxx|xxxxxxxx|xxxxxxxx|xxxxxxxx|xxx-----|--------|--------|
- * |--------|--------|--------|--------|--------|---xxxxx|xxxxxxxx|xxx-----|
- * |--------|--------|--------|--------|--------|--------|--------|---xxxxx|
- *
- * Maximum ID = 11111_11111111_11111111_11111111_11111111_11111111_11111111
- *
- * Maximum TS = 11111_11111111_11111111_11111111_111
- *
- * Maximum NT = ----- -------- -------- -------- ---11111_11111111_111 = 65535
- *
- * Maximum SH = ----- -------- -------- -------- -------- -------- ---11111 = 31
- *
- * It can generate 64k unique id per IP and up to 2106-02-07T06:28:15Z.
- * 对于绝大部分普通应用程序来说，根本不需要每秒超过400万的ID，机器数量也达不到1024台，所以，我们可以改进一下，使用更短的ID生成方式：
- * 53bitID由32bit秒级时间戳+16bit自增+5bit机器标识组成，累积32台机器，每秒可以生成6.5万个序列号，时间戳减去一个固定值，此方案最高可支持到2106年。
- * 机器标识采用简单的主机名方案，只要主机名符合host-1，host-2就可以自动提取机器标识，无需配置。
- * 为什么采用最多53位整型，而不是64位整型？这是因为考虑到大部分应用程序是Web应用，如果要和JavaScript打交道，由于JavaScript支持的最大整型就是53位，超过这个位数，JavaScript将丢失精度。
+ * 全局序列号，(年-2000)+月+日+时+分+秒，前缀12位，后补5位相同前缀下自增序列由vertx生成
  */
 public class IdUtil {
     public static final Logger log = LoggerFactory.getLogger(IdUtil.class);
+    
+    /**
+     * 获取年月日时分秒格式化值
+     * @return
+     */
+    private static String getOrderIdPrefix() {
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        int year = c.get(Calendar.YEAR);
+        //JDK日历类的月份范围是[0,11]
+        int month = c.get(Calendar.MONTH)+1;
+        int day = c.get(Calendar.DAY_OF_MONTH);
+        int hour = c.get(Calendar.HOUR_OF_DAY);
+        int minute = c.get(Calendar.MINUTE);
+        int second = c.get(Calendar.SECOND);
+        String monthFmt = String.format("%02d", month);
+        String dayFmt = String.format("%02d", day);
+        String hourFmt = String.format("%02d", hour);
+        String minuteFmt = String.format("%02d", minute);
+        String secondFmt = String.format("%02d", second);
+        return (year-2000)+monthFmt+dayFmt+hourFmt+minuteFmt+secondFmt;
+    }
 
-	private static final Pattern PATTERN_LONG_ID = Pattern.compile("^([0-9]{15})([0-9a-f]{32})([0-9a-f]{3})$");
+    /**
+     * 根据时间前缀生成分布式ID
+     * @param prefix
+     * @return
+     */
+    private static Future<Long> getFullSeq(String prefix) {
+        Promise<Long> result = Promise.promise();
+        Context context = Vertx.currentContext();
+        Vertx vertx;
+        if (null==context) {
+            log.error("获取序列号Counter{}出错:Vertx没有启动",prefix);
+            result.fail("获取序列号Counter"+prefix+"出错:Vertx没有启动");
+            return result.future();
+        } else {
+            vertx = context.owner();
+        }
+        SharedData sharedData = vertx.sharedData();
+        sharedData.getCounter(prefix, rs->{
+            if (rs.succeeded()) {
+                Counter counter = rs.result();
+                counter.incrementAndGet(gRs->{
+                    if (gRs.succeeded()) {
+                        String suffixFmt = String.format("%05d", gRs.result());
+                        Long seqId = Long.parseLong(prefix+suffixFmt);
+                        result.complete(seqId);
+                    } else {
+                        log.error("获取序列号Counter{}自增出错:{}",prefix, gRs.cause());
+                        result.fail("获取序列号Counter"+prefix+"自增出错");
+                    }
+                });
+            } else {
+                log.error("获取序列号Counter{}出错:{}",prefix, rs.cause());
+                result.fail("获取序列号Counter"+prefix+"出错");
+            }
+        });
+        return result.future();
+    }
 
-	private static final Pattern PATTERN_HOSTNAME = Pattern.compile("^.*\\D+([0-9]+)$");
-
-	private static final long OFFSET = LocalDate.of(2000, 1, 1).atStartOfDay(ZoneId.of("Z")).toEpochSecond();
-
-	private static final long MAX_NEXT = 0b11111_11111111_111L;
-
-	private static final long SHARD_ID = getServerIdAsLong();
-
-	private static long offset = 0;
-
-	private static long lastEpoch = 0;
-
-	public static long nextId() {
-		return nextId(System.currentTimeMillis() / 1000);
-	}
-
-	private static synchronized long nextId(long epochSecond) {
-		if (epochSecond < lastEpoch) {
-			// warning: clock is turn back:
-			log.warn("clock is back: " + epochSecond + " from previous:" + lastEpoch);
-			epochSecond = lastEpoch;
-		}
-		if (lastEpoch != epochSecond) {
-			lastEpoch = epochSecond;
-			reset();
-		}
-		offset++;
-		long next = offset & MAX_NEXT;
-		if (next == 0) {
-			log.warn("maximum id reached in 1 second in epoch: " + epochSecond);
-			return nextId(epochSecond + 1);
-		}
-		return generateId(epochSecond, next, SHARD_ID);
-	}
-
-	private static void reset() {
-		offset = 0;
-	}
-
-	private static long generateId(long epochSecond, long next, long shardId) {
-		return ((epochSecond - OFFSET) << 21) | (next << 5) | shardId;
-	}
-
-	private static long getServerIdAsLong() {
-		try {
-			String hostname = InetAddress.getLocalHost().getHostName();
-			Matcher matcher = PATTERN_HOSTNAME.matcher(hostname);
-			if (matcher.matches()) {
-				long n = Long.parseLong(matcher.group(1));
-				if (n >= 0 && n < 8) {
-					log.info("detect server id from host name {}: {}.", hostname, n);
-					return n;
-				}
-			}
-		} catch (UnknownHostException e) {
-			log.warn("unable to get host name. set server id = 0.");
-		}
-		return 0;
-	}
+    /**
+     * 生成分布式ID，前12位为时间，后5位是在相同时间前缀下的自增序列
+     * @return
+     */
+    public static Future<Long> getId() {
+        return getFullSeq(getOrderIdPrefix());
+    }
 }

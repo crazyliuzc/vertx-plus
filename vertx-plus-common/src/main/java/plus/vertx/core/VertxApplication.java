@@ -1,8 +1,14 @@
 package plus.vertx.core;
 
+import static io.vertx.core.logging.LoggerFactory.LOGGER_DELEGATE_FACTORY_CLASS_NAME;
+import static io.vertx.core.spi.resolver.ResolverProvider.DISABLE_DNS_RESOLVER_PROP_NAME;
+
+import javax.annotation.Resource;
+
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import io.netty.util.internal.logging.Log4J2LoggerFactory;
 import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Log4j2LogDelegateFactory;
@@ -10,11 +16,6 @@ import plus.vertx.core.startup.MainVerticle;
 import plus.vertx.core.support.ValidateUtil;
 import plus.vertx.core.support.VertxUtil;
 import plus.vertx.core.support.cluster.SingleVertx;
-
-import javax.annotation.Resource;
-
-import static io.vertx.core.logging.LoggerFactory.LOGGER_DELEGATE_FACTORY_CLASS_NAME;
-import static io.vertx.core.spi.resolver.ResolverProvider.DISABLE_DNS_RESOLVER_PROP_NAME;
 
 /**
  * Vertx常规启动类
@@ -40,7 +41,7 @@ public class VertxApplication {
      * 启动服务,传入配置文件名
      * @param profileName
      */
-    public static void run(String profileName) {
+    public static Future<String> run(String profileName) {
         Vertx vertx = SingleVertx.getVertx();
         DeploymentOptions deploymentOptions = new DeploymentOptions();
         JsonObject jsonObject = new JsonObject();
@@ -49,25 +50,27 @@ public class VertxApplication {
         }
         jsonObject.put(Constants.PROFILE_NAME,profileName);
         deploymentOptions.setConfig(jsonObject);
-        VertxUtil.run(MainVerticle.class, vertx, deploymentOptions);
+        return VertxUtil.run(MainVerticle.class, vertx, deploymentOptions);
     }
 
     /**
      * 启动服务,查询传入类是否有注解配置文件,如有则按照注解读取,没有则取默认
      * @param primarySource 项目启动类
      */
-    public static void run(Class<?> primarySource) {
+    public static Future<String> run(Class<?> primarySource) {
         if (primarySource.isAnnotationPresent(Resource.class)) {
             Resource primarySourceAnnotation = primarySource.getAnnotation(Resource.class);
             if (ValidateUtil.isNotEmpty(primarySourceAnnotation.name())) {
-                run(primarySourceAnnotation.name());
+                return run(primarySourceAnnotation.name());
+            } else {
+                return Future.failedFuture("Resource注解必须填写文件名");
             }
         } else {
-            run("");
+            return run("");
         }
     }
 
-    public static void run() {
-        run("");
+    public static Future<String> run() {
+        return run("");
     }
 }

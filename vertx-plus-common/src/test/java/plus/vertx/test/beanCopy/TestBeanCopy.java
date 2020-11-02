@@ -1,9 +1,13 @@
 package plus.vertx.test.beanCopy;
 
+import java.util.Map;
+
 import com.google.common.collect.Maps;
-import io.vertx.core.json.JsonObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.vertx.core.json.JsonObject;
 import plus.vertx.core.support.CopyUtil;
 import plus.vertx.core.support.JsonUtil;
 import plus.vertx.core.support.yaml.ClusterYaml;
@@ -12,8 +16,6 @@ import plus.vertx.test.beanCopy.bean.User;
 import plus.vertx.test.beanCopy.bean.UserDto;
 import plus.vertx.test.beanCopy.bean.UserWithDiffType;
 import plus.vertx.test.beanCopy.protoBean.HelloRequest;
-
-import java.util.Map;
 
 /**
  * 测试cglib的Bean复制
