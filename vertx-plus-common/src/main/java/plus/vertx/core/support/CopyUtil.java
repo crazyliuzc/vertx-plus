@@ -1,22 +1,16 @@
 package plus.vertx.core.support;
 
-import com.google.protobuf.MessageOrBuilder;
-import io.vertx.core.json.JsonObject;
-import net.sf.cglib.beans.BeanCopier;
-import net.sf.cglib.core.Converter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.vertx.core.json.JsonObject;
 
 /**
- * 基于cglib的Bean深复制,
- * 部分不能复制的使用Jackson转换,
+ * 基于Jackson的Bean深复制以及转换,
  * 可以复制Google protocol MessageOrBuilder实体
  * 注意这里的复制必须属性同名同类型,重度复制用MapStrut
  * @author crazyliu
@@ -25,11 +19,6 @@ public class CopyUtil {
     public static final Logger log = LoggerFactory.getLogger(CopyUtil.class);
     private CopyUtil() {
     }
-
-    /**
-     * 缓存BeanCopier
-     */
-    private static final ConcurrentHashMap<Class<?>, ConcurrentHashMap<Class<?>, BeanCopier>> CACHE = new ConcurrentHashMap<>();
 
     /**
      * 实体复制
@@ -50,22 +39,7 @@ public class CopyUtil {
      * @return 复制后的实体
      */
     public static <T> T copy(Object source, T target) {
-        //如果待复制的实体是google protocol,则另外处理
-        if (target instanceof MessageOrBuilder) {
-            return JsonUtil.toEntity(JsonUtil.toJson(source,false), CastUtil.<Class<T>>cast(target.getClass()));
-        } else {
-            BeanCopier beanCopier = getCacheBeanCopier(source.getClass(), target.getClass());
-            beanCopier.copy(source, target, new Converter() {
-                @Override
-                public Object convert(Object value, Class target, Object context) {
-                    if(target.isSynthetic()){
-                        BeanCopier.create(target, target, true).copy(value, value, this);
-                    }
-                    return value;
-                }
-            });
-            return target;
-        }
+        return JsonUtil.toEntity(JsonUtil.toJson(source,false), CastUtil.<Class<T>>cast(target.getClass()));
     }
     
     /**
@@ -79,11 +53,8 @@ public class CopyUtil {
         if (sources.isEmpty()) {
             return Collections.emptyList();
         }
-        
-        return sources.stream()
-                .filter(Objects::nonNull)
-                .map(source -> copy(source, target))
-                .collect(Collectors.toList());
+
+        return JsonUtil.toList(JsonUtil.toJson(sources,false), CastUtil.<Class<T>>cast(target.getClass()));
     }
 
     /**
@@ -175,16 +146,4 @@ public class CopyUtil {
         return new JsonObject(JsonUtil.toJson(source,false));
     }
 
-    /**
-     * 获取BeanCopier
-     * @param <S>
-     * @param <T>
-     * @param source
-     * @param target
-     * @return 
-     */
-    private static <S, T> BeanCopier getCacheBeanCopier(Class<S> source, Class<T> target) {
-        ConcurrentHashMap<Class<?>, BeanCopier> copierConcurrentHashMap = CACHE.computeIfAbsent(source, aClass -> new ConcurrentHashMap<>(16));
-        return copierConcurrentHashMap.computeIfAbsent(target, aClass -> BeanCopier.create(source, target, true));
-    }
 }

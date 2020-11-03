@@ -14,12 +14,12 @@ import plus.vertx.core.support.SeqUtil;
 public class TestEventBus1 extends BaseStart {
     @Override
     public Future<Void> action(Vertx vertx, Promise<Void> result) {
-        String message = SeqUtil.getId();
+        String message = SeqUtil.getSnowflakeId();
         log.info("啦啦啦，这是消息接收方，序列号{}", message);
         log.info("server... Vertx.currentContext().isWorkerContext(): {}", Vertx.currentContext().isWorkerContext());
         vertx.eventBus().consumer("test-event-bus-server",ar->{
             log.info("trans: {}", Vertx.currentContext().<String>get("trans"));
-            Vertx.currentContext().put("trans", "测试一下咯"+SeqUtil.getId());
+            Vertx.currentContext().put("trans", "测试一下咯"+SeqUtil.getSnowflakeId());
             log.info("consumer... Vertx.currentContext().isWorkerContext(): {}", Vertx.currentContext().isWorkerContext());
             log.info(ar.body().toString());
             ar.reply("测试返回"+message);

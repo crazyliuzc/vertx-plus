@@ -40,7 +40,7 @@ public class TestBeanCopy {
         User mapToBean1 = CopyUtil.toBean(map1, User.class);
         log.info(JsonUtil.toJson(mapToBean1));
 
-        //属性名称相同类型相同的属性拷贝
+        //不同类型不能拷贝
         User user = new User();
         user.setAge(10);
         user.setName("zhangsan");
@@ -48,8 +48,7 @@ public class TestBeanCopy {
         CopyUtil.copy(user, userDto);
         log.info(JsonUtil.toJson(userDto));
 
-        //属性名称相同而类型不同的属性不会被拷贝
-        //即使源类型是原始类型(int, short和char等)，目标类型是其包装类型(Integer, Short和Character等)，或反之：都 不会被拷贝
+        //不同类型不能拷贝
         User user1 = new User();
         user1.setAge(10);
         user1.setName("zhangsan");

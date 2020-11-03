@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.vertx.core.Vertx;
-import plus.vertx.core.support.IdUtil;
 import plus.vertx.core.support.SeqUtil;
 import plus.vertx.core.support.cluster.SingleVertx;
 
@@ -22,11 +21,10 @@ public class OrderSeq {
 
     public static void main(String[] args) {
         Vertx vertx = SingleVertx.getVertx();
-        for (int i = 0; i < 1000; i++) {
-            log.info("雪花算法ID:         {}",SeqUtil.next());
-            log.info("时间戳:             {}",System.currentTimeMillis());
+        for (int i = 0; i < 10000; i++) {
+            log.info("雪花算法ID:         {}",SeqUtil.nextSnowflakeId());
             vertx.executeBlocking(b->{
-                IdUtil.getId().onComplete(gRs->{
+                SeqUtil.nextFullTimeId().onComplete(gRs->{
                     if (gRs.succeeded()) {
                         log.info("getOrderId:        {}",gRs.result());
                     } else {
