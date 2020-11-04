@@ -15,7 +15,7 @@ public class ReTry {
      */
     public Future<Boolean> retryWhenFail(Integer retryTimes,Long retryIntervalMs) {
         Promise<Boolean> promise = Promise.promise();
-        boolean retry = false;
+        // boolean retry = false;
         return promise.future();
     }
 /* fupun retryWhenFail(retryTimes: Int, retryIntervalMs: Long? = null, block: () -> Future<Boolean>): Future<Boolean> {
