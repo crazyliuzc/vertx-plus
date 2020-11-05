@@ -13,7 +13,7 @@ public class ProducerVerticle extends AbstractVerticle {
         //发送消息(单发),只会发送注册此地址的一个,采用不严格的轮询算法选择
         DeliveryOptions options = new DeliveryOptions();//设置消息头等
         options.addHeader("some-header", "some-value");
-        eventBus.send("com.hou", "单发消息",options,ar->{
+        eventBus.request("com.hou", "单发消息",options,ar->{
             if(ar.succeeded()) System.out.println("收到消费者确认信息:"+ar.result().body());
         });
         //发送自定义对象,需要编解码器
