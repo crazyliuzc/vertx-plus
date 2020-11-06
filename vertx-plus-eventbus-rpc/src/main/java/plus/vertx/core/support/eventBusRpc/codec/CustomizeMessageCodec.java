@@ -8,18 +8,18 @@ import java.io.ObjectOutputStream;
 
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.MessageCodec;
-import plus.vertx.core.support.eventBusRpc.MessageStyle;
+import plus.vertx.core.support.eventBusRpc.BaseMessageStyle;
 
 /**
  * 自定义对象编解码器,两个类型可用于消息转换,即发送对象转换为接受需要的对象
  */
-public class CustomizeMessageCodec implements MessageCodec<MessageStyle, MessageStyle> {
+public class CustomizeMessageCodec implements MessageCodec<BaseMessageStyle, BaseMessageStyle> {
     /**
      * 将消息实体封装到Buffer用于传输
      * 实现方式：使用对象流从对象中获取Byte数组然后追加到Buffer
      */
     @Override
-    public void encodeToWire(Buffer buffer, MessageStyle orderMessage) {
+    public void encodeToWire(Buffer buffer, BaseMessageStyle orderMessage) {
         final ByteArrayOutputStream b = new ByteArrayOutputStream();
         try (ObjectOutputStream o = new ObjectOutputStream(b)){
             o.writeObject(orderMessage);
@@ -29,16 +29,16 @@ public class CustomizeMessageCodec implements MessageCodec<MessageStyle, Message
     }
     //从Buffer中获取消息对象
     @Override
-    public MessageStyle decodeFromWire(int pos, Buffer buffer) {
+    public BaseMessageStyle decodeFromWire(int pos, Buffer buffer) {
         final ByteArrayInputStream b = new ByteArrayInputStream(buffer.getBytes());
-        MessageStyle msg = null;
-        try (ObjectInputStream o = new ObjectInputStream(b)){ msg = (MessageStyle) o.readObject();
+        BaseMessageStyle msg = null;
+        try (ObjectInputStream o = new ObjectInputStream(b)){ msg = (BaseMessageStyle) o.readObject();
         } catch (IOException | ClassNotFoundException e) { e.printStackTrace(); }
         return msg;
     }
     //消息转换
     @Override
-    public MessageStyle transform(MessageStyle orderMessage) {
+    public BaseMessageStyle transform(BaseMessageStyle orderMessage) {
         System.out.println("消息转换---");//可对接受消息进行转换,比如转换成另一个对象等
         // orderMessage.setName("姚振");
         return orderMessage;
