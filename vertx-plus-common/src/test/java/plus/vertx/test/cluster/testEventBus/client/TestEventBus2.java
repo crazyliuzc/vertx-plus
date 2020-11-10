@@ -3,6 +3,7 @@ package plus.vertx.test.cluster.testEventBus.client;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
+import io.vertx.core.eventbus.DeliveryOptions;
 import plus.vertx.core.annotation.Start;
 import plus.vertx.core.startup.BaseStart;
 import plus.vertx.core.support.SeqUtil;
@@ -18,7 +19,11 @@ public class TestEventBus2 extends BaseStart {
         log.info("啦啦啦，这是消息发送方，序列号{}", message);
         log.info("send... Vertx.currentContext().isWorkerContext(): {}", Vertx.currentContext().isWorkerContext());
         Vertx.currentContext().put("trans", "测试一下咯");
-        vertx.eventBus().request("test-event-bus-server",message,ar->{
+
+
+        DeliveryOptions deliveryOptions = new DeliveryOptions();
+        deliveryOptions.addHeader("key", "value");
+        vertx.eventBus().request("test-event-bus-server",message,deliveryOptions,ar->{
             log.info("back... Vertx.currentContext().isWorkerContext(): {}", Vertx.currentContext().isWorkerContext());
             log.info("trans: {}", Vertx.currentContext().<String>get("trans"));
             if (ar.succeeded()) {
