@@ -24,7 +24,7 @@ public class TestEventBus2 extends BaseStart {
         DeliveryOptions deliveryOptions = new DeliveryOptions();
         deliveryOptions.addHeader("key", "value");
         vertx.eventBus().request("test-event-bus-server",message,deliveryOptions,ar->{
-            log.info("back... Vertx.currentContext().isWorkerContext(): {}", Vertx.currentContext().isWorkerContext());
+            log.info("back...Vertx.currentContext().isWorkerContext(): {}", Vertx.currentContext().isWorkerContext());
             log.info("trans: {}", Vertx.currentContext().<String>get("trans"));
             if (ar.succeeded()) {
                 log.info(ar.result().body().toString());
