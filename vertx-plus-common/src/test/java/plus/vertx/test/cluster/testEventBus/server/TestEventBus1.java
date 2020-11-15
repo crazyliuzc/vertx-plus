@@ -19,7 +19,7 @@ public class TestEventBus1 extends BaseStart {
         log.info("server... Vertx.currentContext().isWorkerContext(): {}", Vertx.currentContext().isWorkerContext());
         vertx.eventBus().consumer("test-event-bus-server",ar->{
             log.info("trans: {}", Vertx.currentContext().<String>get("trans"));
-            Vertx.currentContext().put("trans", "测试一下..咯"+SeqUtil.getSnowflakeId());
+            Vertx.currentContext().put("trans", "测试一下...咯"+SeqUtil.getSnowflakeId());
             log.info("consumer... Vertx.currentContext().isWorkerContext(): {}", Vertx.currentContext().isWorkerContext());
             log.info(ar.body().toString());
             ar.reply("测试返回"+message);
