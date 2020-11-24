@@ -16,7 +16,7 @@ public class TestEventBus1 extends BaseStart {
     public Future<Void> action(Vertx vertx, Promise<Void> result) {
         String message = SeqUtil.getSnowflakeId();
         log.info("啦啦啦，这是消息接收方，序列号{}", message);
-        log.info("server... Vertx.currentContext().isWorkerContext(): {}", Vertx.currentContext().isWorkerContext());
+        log.info("server...Vertx.currentContext().isWorkerContext(): {}", Vertx.currentContext().isWorkerContext());
         vertx.eventBus().consumer("test-event-bus-server",ar->{
             log.info("trans: {}", Vertx.currentContext().<String>get("trans"));
             Vertx.currentContext().put("trans", "测试一下...咯"+SeqUtil.getSnowflakeId());
