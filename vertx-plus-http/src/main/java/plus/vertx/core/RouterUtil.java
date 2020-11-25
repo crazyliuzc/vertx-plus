@@ -1,7 +1,21 @@
 package plus.vertx.core;
 
+import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpServer;
+import io.vertx.ext.web.Route;
+import io.vertx.ext.web.Router;
+import plus.vertx.core.support.VertxUtil;
+import plus.vertx.core.support.cluster.SingleVertx;
+
 /**
  * Created by crazyliu on 2020/9/23.
  */
 public class RouterUtil {
+    public static void main(String[] args) {
+        Vertx vertx = SingleVertx.getVertx();
+        HttpServer server = vertx.createHttpServer();
+
+        Router router = Router.router(vertx);
+        router.get().pathRegex("");
+    }
 }
