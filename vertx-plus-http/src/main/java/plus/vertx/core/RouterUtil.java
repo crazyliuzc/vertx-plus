@@ -16,6 +16,5 @@ public class RouterUtil {
         HttpServer server = vertx.createHttpServer();
 
         Router router = Router.router(vertx);
-        router.get().pathRegex("");
     }
 }
