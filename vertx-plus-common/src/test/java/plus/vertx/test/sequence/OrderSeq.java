@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.vertx.core.Vertx;
+import plus.vertx.core.support.ConvertUtil;
 import plus.vertx.core.support.SeqUtil;
 import plus.vertx.core.support.cluster.SingleVertx;
 
@@ -20,8 +21,8 @@ public class OrderSeq {
      */
 
     public static void main(String[] args) {
-        Vertx vertx = SingleVertx.getVertx();
-        for (int i = 0; i < 10000; i++) {
+        /*Vertx vertx = SingleVertx.getVertx();
+        for (int i = 0; i < 1000; i++) {
             log.info("雪花算法ID:         {}",SeqUtil.nextSnowflakeId());
             vertx.executeBlocking(b->{
                 SeqUtil.nextFullTimeId().onComplete(gRs->{
@@ -33,12 +34,14 @@ public class OrderSeq {
                 });
             }, rh->{
             });
-            //1379123704365088
-            //87340649610870784
-            //1604302228134
-            //123736088576847054
-            //  201102162825
-            //20200917172602bL
-        }
+            //96377039594061824
+            //20112713575100035
+        }*/
+
+        long t = 96377039594061824L;
+        String to64 = ConvertUtil.get10to64(t);
+        log.info(to64);
+        long to10 = ConvertUtil.get64to10(to64);
+        log.info(to10+"");
     }
 }
