@@ -11,6 +11,7 @@ import java.security.MessageDigest;
 public class Tencent {
     public static final Logger log = LoggerFactory.getLogger(Tencent.class);
     public static void main(String path[]) {
+
         String url = "https://wx.ywmapp.com/addons/yun_shop/?menu#/diy?page_id=158&i=1";
         for (String string : ShortText(url)) {
             log.info(string);

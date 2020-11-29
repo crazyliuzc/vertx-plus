@@ -21,7 +21,7 @@ public class OrderSeq {
      */
 
     public static void main(String[] args) {
-        /*Vertx vertx = SingleVertx.getVertx();
+        Vertx vertx = SingleVertx.getVertx();
         for (int i = 0; i < 1000; i++) {
             log.info("雪花算法ID:         {}",SeqUtil.nextSnowflakeId());
             vertx.executeBlocking(b->{
@@ -36,12 +36,12 @@ public class OrderSeq {
             });
             //96377039594061824
             //20112713575100035
-        }*/
+        }
 
-        long t = 96377039594061824L;
+        /*long t = 96377039594061824L;
         String to64 = ConvertUtil.get10to64(t);
         log.info(to64);
         long to10 = ConvertUtil.get64to10(to64);
-        log.info(to10+"");
+        log.info(to10+"");*/
     }
 }
