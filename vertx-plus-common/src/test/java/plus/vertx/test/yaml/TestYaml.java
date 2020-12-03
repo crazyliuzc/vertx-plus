@@ -4,7 +4,6 @@ import plus.vertx.core.VertxApplication;
 
 /**
  * 测试获取配置文件
- *
  * @author crazyliu
  */
 public class TestYaml {
