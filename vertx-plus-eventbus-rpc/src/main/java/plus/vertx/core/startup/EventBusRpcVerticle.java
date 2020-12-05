@@ -5,6 +5,7 @@ import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 
 /**
+ * 基于EventBus的Rpc服务启动类
  * Created by crazyliu on 2020/10/17.
  */
 public class EventBusRpcVerticle extends BaseStart {
