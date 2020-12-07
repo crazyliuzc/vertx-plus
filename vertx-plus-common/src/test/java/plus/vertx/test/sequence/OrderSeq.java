@@ -23,7 +23,7 @@ public class OrderSeq {
     public static void main(String[] args) {
         Vertx vertx = SingleVertx.getVertx();
         for (int i = 0; i < 1000; i++) {
-            log.info("雪花算法ID:         {}",SeqUtil.nextSnowflakeId());
+            log.info("雪花算法ID: {}",SeqUtil.nextSnowflakeId());
             vertx.executeBlocking(b->{
                 SeqUtil.nextFullTimeId().onComplete(gRs->{
                     if (gRs.succeeded()) {
