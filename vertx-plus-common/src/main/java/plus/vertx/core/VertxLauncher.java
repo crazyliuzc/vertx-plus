@@ -20,6 +20,7 @@ public class VertxLauncher extends io.vertx.core.Launcher {
         //默认日志框架为log4j2
         System.setProperty(LOGGER_DELEGATE_FACTORY_CLASS_NAME, Log4j2LogDelegateFactory.class.getName());
         InternalLoggerFactory.setDefaultFactory(Log4J2LoggerFactory.INSTANCE);
+
         //Vert.x自带有一个DNS Resolver，缺省情况下，启动Vert.x之后，Vert.x会尝试读取hosts文件，若该文件不存在或内容为空，
         // 则Vert.x会使用Google的公开DNS服务器，
         // IP地址是8.8.8.8和8.8.4.4，由于众所周知的原因，国内的用户系统极有可能无法连上该IP地址而导致访问超时等失败，
